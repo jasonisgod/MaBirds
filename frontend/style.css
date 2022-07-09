@@ -1,28 +1,54 @@
 
-.tile-v {
-    width: 3vw;
-    max-width: 3vw;
-    font-size: 1.5vw;
+body {
+    background-color: burlywood;
+}
+
+.tile {
     text-align: center;
-    padding: 0.25vw;
-    margin: 0.25vw;
+    padding: 0.2vw;
+    margin: 0.2vw;
     border: 1px solid black;
     border-radius: 5px;
+    cursor: pointer;
+}
+
+.tile-v {
+    font-size: 1.5vw;
+    min-width: 3.0vw;
+    max-width: 3.0vw;
+    min-height: 5.0vw;
+    max-height: 5.0vw;
+    line-height: 2.0vw;
 }
 
 .tile-h {
-    height: 5vh;
-    max-height: 5vh;
-    font-size: 1.5vw;
-    text-align: center;
-    padding: 0.25vw;
-    margin: 0.25vw;
-    border: 1px solid black;
-    border-radius: 5px;
-    line-height: 4vh;
+    font-size: 3.0vh;
+    min-width: 8.5vh;
+    max-width: 8.5vh;
+    min-height: 5.0vh;
+    max-height: 5.0vh;
+    line-height: 4.0vh;
 }
 
-#hand-top {
+.tile-se {
+    border: 3px solid black;
+}
+
+.tile-bk {
+    cursor: not-allowed;
+}
+
+.gap-v {
+    width: 1vw;
+    max-width: 1vw;
+}
+
+.gap-h {
+    height: 1vh;
+    max-height: 1vh;
+}
+
+#pos-top {
     position: fixed;
     left: 80vw;
     top: 10vh;
@@ -31,29 +57,29 @@
     width: 90%;
 }
 
-#hand-bottom {
+#pos-bottom {
     position: fixed;
-    left: 60vw;
+    left: 65vw;
     bottom: 0vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
     width: 90%;
 }
 
-#hand-left {
+#pos-left {
     position: fixed;
     left: 10vw;
     top: 50vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
-    width: 5vw;
+    width: 10vh;
 }
 
-#hand-right {
+#pos-right {
     position: fixed;
     right: 5vw;
     top: 50vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
-    width: 5vw;
+    width: 10vh;
 }
