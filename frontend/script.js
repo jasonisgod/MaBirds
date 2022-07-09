@@ -1,4 +1,10 @@
 
+var URL_PREFIX = 'http://127.0.0.1:1234'
+var POLL_TIME = 1000
+var NUM = 0
+
+var lastData = {}
+
 var tmpdata = {
     top: {
         hide: [99,99,99,99,99,99,99,99,99,99],
@@ -60,8 +66,8 @@ function tileCode(id) {
 function addTiles(div, hv, rev, se, id, pos) {
     var code = tileCode(id)
     var class_ = (hv == 'v'? 'col ': '') + ('tile ') + ('tile-' + hv + ' ') + (se? '': 'tile-bk')
-    var onclick_ = (se? 'clicked(this, ' + id + ')': '')
-    var tile = $('<div>').addClass(class_).attr('onclick',onclick_)
+    var onclick_ = (se? 'onclickTile(this, ' + id + ')': '')
+    var tile = $('<div>').addClass(class_).attr('onclick',onclick_).attr('value',id)
     var text = $('<div>').addClass('tile-' + pos + ' ').html(code)
     tile.append(text)
     rev? div.prepend(tile): div.append(tile)
@@ -97,6 +103,9 @@ function showPlayer(data, pos) {
 
 function showPool(data) {
     const ROW = 5, COL = 17
+    $(".pool-row").each(function() {
+        $(this).html('')
+    })
     var count = 0
     data.forEach(id => {
         var row = Math.floor(count / COL)
@@ -114,11 +123,43 @@ function showButtons(data) {
     $('#action-song').prop('disabled', !data.song);
     $('#action-gong').prop('disabled', !data.gong);
     $('#action-wooo').prop('disabled', !data.wooo);
+    $('#action-cancel').prop('disabled', !data.cancel);
+    $('#action-bot').prop('disabled', data.play);
 }
 
-function clicked(this_, id) {
-    console.log('onclick', id)
+function onclickTile(this_, id) {
+    console.log('onclick tile', id)
     $(this_).toggleClass('tile-se')
+}
+
+function onclickAction(action) {
+    console.log('onclick action', action)
+    if (action == 'play') {
+        var arr = []
+        $(".tile-se").each(function() {
+            arr.push(parseInt($(this).attr('value')))
+        })
+        console.log(arr)
+        if (arr.length == 1) {
+            var url = URL_PREFIX + "/api/play/" + NUM + '/' + arr[0].toString()
+            console.log(url)
+            $.get(url, function(data, status) {
+                console.log(url, data, status)
+            })
+        }
+    }
+    if (action == 'bot') {
+        var url = URL_PREFIX + "/api/play/bot"
+        $.get(url)
+    }
+    if (action == 'start') {
+        var url = URL_PREFIX + "/api/start"
+        $.get(url)
+    }
+    if (action == 'random') {
+        var url = URL_PREFIX + "/api/start/random"
+        $.get(url)
+    }
 }
 
 function refreshAll(data) {
@@ -130,9 +171,34 @@ function refreshAll(data) {
     showButtons(data.action)
 }
 
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r!=null) return unescape(r[2]); return null;
+}
+
+function setPollTimer() {
+    setInterval(() => {
+        $.get(URL_PREFIX + "/api/data/" + NUM, function(data, status) {
+            // console.log(data, status)
+            data = JSON.parse(data).data
+            if (JSON.stringify(data) === JSON.stringify(lastData)) {
+                console.log('same')
+            } else {
+                lastData = data
+                console.log('new', data)
+                refreshAll(data)
+            }
+        })
+    }, POLL_TIME);
+}
+
 $(function() {
-    refreshAll(tmpdata)
+    console.log('ready')
+    // NUM = getUrlParam('num')
+    setPollTimer()
 });
+
 
 /*
 

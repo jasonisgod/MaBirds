@@ -124,21 +124,29 @@ body {
 
 #action-box {
     position: fixed;
-    right: 3vw;
+    right: -8vw;
     bottom: 3vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
-    
 }
 
 .action {
     min-width: 3vw;
     max-width: 3vw;
-    min-height: 5vh;
-    max-height: 5vh;
+    min-height: 3vw;
+    max-height: 3vw;
     margin: 0.2vh 0.2vw;
     padding: 0.2vh 0.2vw;
-    font-size: 1.5vw;
+    font-size: 1.25vw;
+}
+
+
+#menu-box {
+    position: fixed;
+    left: 5vw;
+    top: 5vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
 }
 
 #name-tag {
