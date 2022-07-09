@@ -17,6 +17,13 @@ var data = {
         43,12,47,47,26,31,28,11,19,24,35,25,13,26,44,43,29,31,28,11,19,24,35,25,13,26,
         44,24,35,25,13,26,44,43,29,31,28,11,19,24,35,25,13,26,44,
     ],
+    action: {
+        play: false,
+        pong: true,
+        song: true,
+        gong: false,
+        wooo: false
+    }
 }
 
 function getName(id) {
@@ -75,6 +82,14 @@ function showPool(data) {
     })
 }
 
+function showButtons(data) {
+    $('#action-play').prop('disabled', !data.play);
+    $('#action-pong').prop('disabled', !data.pong);
+    $('#action-song').prop('disabled', !data.song);
+    $('#action-gong').prop('disabled', !data.gong);
+    $('#action-wooo').prop('disabled', !data.wooo);
+}
+
 function clicked(this_, id) {
     console.log('onclick', id)
     $(this_).toggleClass('tile-se')
@@ -86,4 +101,5 @@ $(function() {
     showPlayer(data.hide.left,   data.show.left,   'left',   'h', false, false)
     showPlayer(data.hide.right,  data.show.right,  'right',  'h', true,  false)
     showPool(data.pool)
+    showButtons(data.action)
 });

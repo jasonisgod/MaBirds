@@ -5,11 +5,12 @@ body {
 
 .tile {
     text-align: center;
-    padding: 0.2vw;
-    margin: 0.2vw;
-    border: 1px solid black;
+    padding: 0.5vh 0.2vw;
+    margin: 0.2vh 0.2vw;
     border-radius: 5px;
     cursor: pointer;
+    background-color: gray;
+    color: white;
 }
 
 .tile-v {
@@ -31,7 +32,7 @@ body {
 }
 
 .tile-se {
-    border: 3px solid black;
+    margin-top: -3vh;
 }
 
 .tile-bk {
@@ -84,7 +85,7 @@ body {
     width: 10vh;
 }
 
-#pool {
+#pool-box {
     position: fixed;
     left: 50vw;
     top: 50vh;
@@ -95,7 +96,6 @@ body {
     max-width: 65vw;
     min-height: 65vh;
     max-height: 65vh;
-    background-color: transparent;
 }
 
 .pool-row-even {
@@ -104,4 +104,26 @@ body {
 
 .pool-row-odd {
     margin-left: 0.5vw;
+}
+
+#action-box {
+    position: fixed;
+    right: 3vw;
+    bottom: 3vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    
+}
+
+.action {
+    min-width: 3vw;
+    max-width: 3vw;
+    min-height: 5vh;
+    max-height: 5vh;
+    margin: 0.2vh 0.2vw;
+    padding: 0.2vh 0.2vw;
+}
+
+.action-en {
+
 }
