@@ -1,0 +1,59 @@
+
+.tile-v {
+    width: 3vw;
+    max-width: 3vw;
+    font-size: 1.5vw;
+    text-align: center;
+    padding: 0.25vw;
+    margin: 0.25vw;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.tile-h {
+    height: 5vh;
+    max-height: 5vh;
+    font-size: 1.5vw;
+    text-align: center;
+    padding: 0.25vw;
+    margin: 0.25vw;
+    border: 1px solid black;
+    border-radius: 5px;
+    line-height: 4vh;
+}
+
+#hand-top {
+    position: fixed;
+    left: 80vw;
+    top: 10vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    width: 90%;
+}
+
+#hand-bottom {
+    position: fixed;
+    left: 60vw;
+    bottom: 0vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    width: 90%;
+}
+
+#hand-left {
+    position: fixed;
+    left: 10vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    width: 5vw;
+}
+
+#hand-right {
+    position: fixed;
+    right: 5vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    width: 5vw;
+}
