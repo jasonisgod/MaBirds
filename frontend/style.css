@@ -68,7 +68,7 @@ body {
 
 #pos-left {
     position: fixed;
-    left: 10vw;
+    left: 10vh;
     top: 50vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
@@ -77,9 +77,31 @@ body {
 
 #pos-right {
     position: fixed;
-    right: 5vw;
+    right: 0vh;
     top: 50vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
     width: 10vh;
+}
+
+#pool {
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    padding: 2vh 2vw;
+    min-width: 65vw;
+    max-width: 65vw;
+    min-height: 65vh;
+    max-height: 65vh;
+    background-color: transparent;
+}
+
+.pool-row-even {
+    margin-left: -0.5vw;
+}
+
+.pool-row-odd {
+    margin-left: 0.5vw;
 }
