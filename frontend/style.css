@@ -161,3 +161,11 @@ body {
     color: antiquewhite;
     font-size: 3vh;
 }
+
+.row {
+    display: flex;
+}
+
+.col {
+    display: unset;
+}
