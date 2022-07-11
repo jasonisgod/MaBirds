@@ -137,8 +137,8 @@ body {
 }
 
 .action {
-    min-width: 3vw;
-    max-width: 3vw;
+    min-width: 3.5vw;
+    max-width: 3.5vw;
     min-height: 3vw;
     max-height: 3vw;
     margin: 0.2vh 0.2vw;

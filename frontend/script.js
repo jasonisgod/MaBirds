@@ -48,18 +48,19 @@ function colorFont(color, text) {
 function tileCode(id) {
 
     var map = {
-        11:'&#x1F019;',12:'&#x1F01A;',13:'&#x1F01B;', // 筒
+        11:'&#x1F019;',12:'&#x1F01A;',13:'&#x1F01B;', // tong
         14:'&#x1F01C;',15:'&#x1F01D;',16:'&#x1F01E;',
         17:'&#x1F01F;',18:'&#x1F020;',19:'&#x1F021;',
-        21:'&#x1F010;',22:'&#x1F011;',23:'&#x1F012;', // 索
+        21:'&#x1F010;',22:'&#x1F011;',23:'&#x1F012;', // sok
         24:'&#x1F013;',25:'&#x1F014;',26:'&#x1F015;',
         27:'&#x1F016;',28:'&#x1F017;',29:'&#x1F018;',
-        31:'&#x1F007;',32:'&#x1F008;',33:'&#x1F009;', // 萬
+        31:'&#x1F007;',32:'&#x1F008;',33:'&#x1F009;', // man
         34:'&#x1F00A;',35:'&#x1F00B;',36:'&#x1F00C;',
         37:'&#x1F00D;',38:'&#x1F00E;',39:'&#x1F00F;',
-        41:'&#x1F000;',42:'&#x1F001;',43:'&#x1F002;',44:'&#x1F003;', // 字
+        41:'&#x1F000;',42:'&#x1F001;',43:'&#x1F002;',44:'&#x1F003;', // word
         45:'&#x1F004;',46:'&#x1F005;',47:'&#x1F006;',
-        99:'&#x1F02B' // 背
+        90:'', // empty
+        99:'&#x1F02B' // back
     }
     return map[id];
 }
@@ -100,6 +101,9 @@ function showPlayer(data, pos) {
     data.come.forEach(id => {
         addTiles(div, hv, rev, self, id, pos)
     })
+    if (data.come.length == 0) {
+        addTiles(div, hv, rev, self, 90, pos)
+    }
 }
 
 function showPool(data) {
@@ -133,31 +137,43 @@ function onclickTile(this_, id) {
     $(this_).toggleClass('tile-se')
 }
 
-function onclickAction(action) {
-    console.log('onclick action', action)
-    if (action == 'play') {
-        var arr = []
-        $(".tile-se").each(function() {
-            arr.push(parseInt($(this).attr('value')))
+function onclickAction(atype) {
+    console.log('onclick atype', atype)
+    var arr = []
+    $(".tile-se").each(function() {
+        arr.push(parseInt($(this).attr('value')))
+    })
+    // console.log(arr)
+    if (atype == 'PLAY' && arr.length == 1) {
+        var url = DOMAIN + "/api/play/" + NUM + '/' + arr[0].toString()
+        console.log(url)
+        $.get(url, function(data, status) {
+            console.log(url, data, status)
         })
-        console.log(arr)
-        if (arr.length == 1) {
-            var url = DOMAIN + "/api/play/" + NUM + '/' + arr[0].toString()
-            console.log(url)
-            $.get(url, function(data, status) {
-                console.log(url, data, status)
-            })
-        }
     }
-    if (action == 'bot') {
-        var url = DOMAIN + "/api/play/bot"
+    if (atype == 'PONG' && arr.length == 2) {
+        var url = DOMAIN + "/api/action/" + NUM + '/PONG/'+ arr.join(',')
+        console.log(url)
+        $.get(url, function(data, status) {
+            console.log(url, data, status)
+        })
+    }
+    if (atype == 'CANCEL') {
+        var url = DOMAIN + "/api/action/" + NUM + '/CANCEL/99'
+        console.log(url)
+        $.get(url, function(data, status) {
+            console.log(url, data, status)
+        })
+    }
+    if (atype == 'BOT') {
+        var url = DOMAIN + "/api/bot"
         $.get(url)
     }
-    if (action == 'start') {
+    if (atype == 'START') {
         var url = DOMAIN + "/api/start"
         $.get(url)
     }
-    if (action == 'random') {
+    if (atype == 'RANDOM') {
         var url = DOMAIN + "/api/start/random"
         $.get(url)
     }
