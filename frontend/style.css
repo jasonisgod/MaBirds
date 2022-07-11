@@ -37,12 +37,15 @@ body {
 .tile-bottom {
     transform: translateX(-2.0vw);
 }
+
 .tile-left {
     transform: rotateZ(90deg);
 }
+
 .tile-top {
     transform: rotateZ(180deg);
 }
+
 .tile-right {
     transform: rotateZ(270deg);
 }
@@ -68,7 +71,7 @@ body {
 #pos-top {
     position: fixed;
     left: 80vw;
-    top: 10vh;
+    top: 7.5vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
     width: 90%;
@@ -77,7 +80,7 @@ body {
 #pos-bottom {
     position: fixed;
     left: 60vw;
-    bottom: 0vh;
+    top: 90vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
     width: 90%;
@@ -85,7 +88,7 @@ body {
 
 #pos-left {
     position: fixed;
-    left: 10vh;
+    left: 10vw;
     top: 45vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
@@ -94,7 +97,7 @@ body {
 
 #pos-right {
     position: fixed;
-    right: 0vh;
+    left: 90vw;
     top: 45vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
@@ -104,14 +107,17 @@ body {
 #pool-box {
     position: fixed;
     left: 50vw;
-    top: 50vh;
+    top: 45vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
     padding: 2vh 2vw;
-    min-width: 65vw;
-    max-width: 65vw;
-    min-height: 65vh;
-    max-height: 65vh;
+    min-width: 60vw; max-width: 65vw;
+    min-height: 65vh; max-height: 65vh;
+}
+
+.pool-row {
+    min-height: 10vh; max-height: 10vh;
+    flex-wrap: unset !important;
 }
 
 .pool-row-even {
@@ -124,8 +130,8 @@ body {
 
 #action-box {
     position: fixed;
-    right: -8vw;
-    bottom: 3vh;
+    left: 50vw;
+    top: 77.5vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
 }
@@ -140,11 +146,10 @@ body {
     font-size: 1.25vw;
 }
 
-
 #menu-box {
     position: fixed;
-    left: 5vw;
-    top: 5vh;
+    left: 97.5vw;
+    top: 10vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
 }
@@ -154,4 +159,5 @@ body {
     left: 3vw;
     bottom: 3vh;
     color: antiquewhite;
+    font-size: 3vh;
 }

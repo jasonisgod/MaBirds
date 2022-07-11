@@ -1,5 +1,6 @@
 
-var URL_PREFIX = 'http://127.0.0.1:1234'
+// var DOMAIN = 'http://jasonisgod.xyz:9001'
+var DOMAIN = 'http://127.0.0.1:9001'
 var POLL_TIME = 1000
 var NUM = 0
 
@@ -141,7 +142,7 @@ function onclickAction(action) {
         })
         console.log(arr)
         if (arr.length == 1) {
-            var url = URL_PREFIX + "/api/play/" + NUM + '/' + arr[0].toString()
+            var url = DOMAIN + "/api/play/" + NUM + '/' + arr[0].toString()
             console.log(url)
             $.get(url, function(data, status) {
                 console.log(url, data, status)
@@ -149,15 +150,15 @@ function onclickAction(action) {
         }
     }
     if (action == 'bot') {
-        var url = URL_PREFIX + "/api/play/bot"
+        var url = DOMAIN + "/api/play/bot"
         $.get(url)
     }
     if (action == 'start') {
-        var url = URL_PREFIX + "/api/start"
+        var url = DOMAIN + "/api/start"
         $.get(url)
     }
     if (action == 'random') {
-        var url = URL_PREFIX + "/api/start/random"
+        var url = DOMAIN + "/api/start/random"
         $.get(url)
     }
 }
@@ -179,7 +180,7 @@ function getUrlParam(name) {
 
 function setPollTimer() {
     setInterval(() => {
-        $.get(URL_PREFIX + "/api/data/" + NUM, function(data, status) {
+        $.get(DOMAIN + "/api/data/" + NUM, function(data, status) {
             // console.log(data, status)
             data = JSON.parse(data).data
             if (JSON.stringify(data) === JSON.stringify(lastData)) {
