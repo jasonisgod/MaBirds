@@ -2,8 +2,7 @@ import json, sys, random, logging, threading, time
 from flask import Flask, request, render_template
 from flask_cors import CORS
 
-THREAD = True
-TIME_SLEEP = 3 # 2sec
+TIME_DELAY = 1  # 1sec
 
 # utils
 def d2j(d): return json.dumps(d)
@@ -15,14 +14,26 @@ class Player:
         self.hide = []
         self.show = []
         self.come = []
+        self.atype = None
+        self.agroup = None
 
-    def pongs(self, tile):
-        if self.hide.count(tile) >= 2:
-            return [[tile] * 2]
+    def to_dict(self, mask):
+        return {
+            'show': self.show,
+            'hide': [99] * len(self.hide) if mask else self.hide,
+            'come': [99] * len(self.come) if mask else self.come,
+        }
+
+    def wooos(self, tile):
         return []
 
     def gongs(self, tile):
         if self.hide.count(tile) == 3:
+            return [[tile] * 4]
+        return []
+
+    def pongs(self, tile):
+        if self.hide.count(tile) >= 2:
             return [[tile] * 3]
         return []
     
@@ -41,8 +52,21 @@ class Player:
             9: [[7,8]],
         }
         groups = [g for g in table[tail] if all([(t + head) in self.hide for t in g])]
-        groups = [[j + head for j in i] for i in groups]
-        return groups
+        groups = [[j + head for j in i] + [tile] for i in groups]
+        return sorted(groups)
+    
+    def action(self, atype, atile, diff):
+        if atype == 'WOOO': return self.wooos(atile)
+        if atype == 'GONG': return self.gongs(atile)
+        if atype == 'PONG': return self.pongs(atile)
+        if atype == 'SONG': 
+            if diff != 1: return []
+            return self.songs(atile)
+        return []
+
+    def actions(self, atile, diff):
+        atype_list = ['WOOO','GONG','PONG','SONG']
+        return {atype: self.action(atype, atile, diff) for atype in atype_list}
 
 class Game:
     def __init__(self):
@@ -52,10 +76,14 @@ class Game:
         self.prs = [Player() for i in range(4)]
         self.pool = []
         self.bag = []
+        self.atype = None
         self.ctile = 0
         self.cnum = 0
-        self.anum = 0
         self.state = 'STOP'
+        self.mask = True
+
+    def set_mask(self, mask):
+        self.mask = mask
 
     def random_bag(self):
         self.bag = []
@@ -99,114 +127,159 @@ class Game:
         self.prs[0].come = [self.bag.pop(0)]
         self.state = 'PLAY'
 
-    def pr_to_dict(self, num, mask):
-        p = self.prs[num]
-        return {
-            'hide': [99] * len(p.hide) if mask else p.hide,
-            'show': p.show,
-            'come': [99] * len(p.come) if mask else p.come
-        }
+    def num_diff(self, num1, num2):
+        diff, tmp = 0, num1
+        while tmp != num2:
+            diff += 1
+            tmp = (tmp + 1) % 4
+        return diff
 
-    def get_data(self, num):
-        data_bottom = self.pr_to_dict(num, False)
-        data_right  = self.pr_to_dict((num + 1) % 4, False)
-        data_top    = self.pr_to_dict((num + 2) % 4, False)
-        data_left   = self.pr_to_dict((num + 3) % 4, False)
+    def get_data(self, num:int):
+        pr = self.prs[num]
+        pos_list = ['bottom','left','top','right']
+        diff = self.num_diff(self.cnum, num)
+        tmp = pr.actions(self.ctile, diff)
+        total = tmp['WOOO'] + tmp['GONG'] + tmp['PONG'] + tmp['SONG']
+        # print(f'get_data() {tmp} {diff}')
         return {
             'state': self.state,
-            'top': data_top,
-            'bottom': data_bottom,
-            'left': data_left,
-            'right': data_right,
             'pool': self.pool,
+            'atype': self.atype,
+            'cpos': pos_list[diff],
+            'ctile': self.ctile,
+            'bottom': self.prs[num].to_dict(False),
+            'right': self.prs[(num + 1) % 4].to_dict(True),
+            'top': self.prs[(num + 2) % 4].to_dict(True),
+            'left': self.prs[(num + 3) % 4].to_dict(True),
             'action': {
                 'play': (self.state == 'PLAY' and num == self.cnum),
-                'pong': (self.state == 'PONG' and num == self.anum),
-                'song': False,
-                'gong': False,
-                'wooo': False,
-                'cancel': (self.state in ['PONG'] and num == self.anum),
+                'wooo': (self.state == 'ACTION' and len(tmp['WOOO']) > 0 and diff != 0),
+                'gong': (self.state == 'ACTION' and len(tmp['GONG']) > 0 and diff != 0),
+                'pong': (self.state == 'ACTION' and len(tmp['PONG']) > 0 and diff != 0),
+                'song': (self.state == 'ACTION' and len(tmp['SONG']) > 0 and diff == 1),
+                'cancel': (self.state == 'ACTION' and len(total) > 0),
             }
         }
     
-    def do_action(self, num, atype, group):
-        print(f'game.do_action() {num} {atype} {group}')
-        if num == self.anum:
-            pr = self.prs[num]
-            if self.state == 'PONG':
-                if atype == 'CANCEL':
-                    # print(f'do_action() cancel ed')
-                    return self.next_mooo()
-                if atype == 'PONG':
-                    # print(f'do_action() {group} {pr.pongs(self.atile)}')
-                    if group in pr.pongs(self.atile):
-                        self.pool.pop()
-                        pr.hide.remove(self.atile)
-                        pr.hide.remove(self.atile)
-                        pr.show += [[self.atile] * 3]
-                        self.cnum = self.anum
-                        self.anum = -1
-                        self.atile = -1
-                        self.state = 'PLAY'
-                        # print(f'do_action() pong ed')
-                        return True
+    def do_action(self, num:int, atype:str, agroup:list[int]):
+        print(f'do_action() {num} {atype} {agroup}')
+        if self.state != 'ACTION':
+            return False
+        pr = self.prs[num]
+        if atype == 'CANCEL':
+            pr.atype = atype
+            return self.check_action()
+        if atype in ['WOOO','GONG','PONG','SONG']:
+            diff = self.num_diff(self.cnum, num)
+            if agroup not in pr.action(atype, self.ctile, diff):
+                return False
+            pr.atype = atype
+            pr.agroup = agroup
+            return self.check_action()
         return False
 
-    def do_play(self, num, tile):
-        print(f'game.do_play() {num} {tile}')
-        if int(num) != self.cnum:
-            return False
-        p = self.prs[self.cnum]
-        if int(tile) not in (p.hide + p.come):
-            return False
-        p.hide += p.come
-        p.hide.remove(int(tile))
-        p.hide.sort()
-        p.come = []
-        self.pool += [tile]
-        return self.wait_pong(tile)
+    def do_action_end(self, num:int, atype:str, agroup:list[int]):
+        self.cnum = num
+        self.atype = atype
+        self.state = 'DELAY_ACTION'
+        threading.Thread(target=self._do_action_end, args=(num,atype,agroup)).start()
+    
+    def _do_action_end(self, num:int, atype:str, agroup:list[int]):
+        print(f'do_action_end() {num} {atype} {agroup}')
+        time.sleep(TIME_DELAY)
+        print(f'do_action_end() after delay')
+        self.atype = None
+        pr = self.prs[num]
+        if atype == 'WOOO':
+            self.state = 'END'
+            return True
+        if atype in ['GONG','PONG','SONG']:
+            pr.hide.append(self.ctile)
+            for tile in agroup:
+                pr.hide.remove(tile)
+            pr.hide.sort()
+            pr.show.append(sorted(agroup))
+            if atype in ['PONG','SONG']:
+                self.state = 'PLAY'
+                return True
+            return self.do_mooo(num)
+        return False
+    
+    def check_action(self):
+        nums = [(self.cnum + 1 + i) % 4 for i in range(3)]
+        for atype in ['WOOO','GONG','PONG','SONG']:
+            for num in nums:
+                pr = self.prs[num]
+                diff = self.num_diff(self.cnum, num)
+                groups = pr.action(atype, self.ctile, diff)
+                if len(groups) == 0: continue
+                if pr.atype is None: return True
+                if pr.atype != atype: continue
+                if pr.agroup not in groups: continue
+                return self.do_action_end(num, pr.atype, pr.agroup)
+        self.pool += [self.ctile]
+        return self.do_mooo((self.cnum + 1) % 4)
 
-    def wait_wooo(self):
-        pass
+    def do_play(self, num:int, tile:int):
+        print(f'do_play() {num} {tile}')
+        if num != self.cnum:
+            return False
+        pr = self.prs[self.cnum]
+        if tile not in (pr.hide + pr.come):
+            return False
+        self.ctile = tile
+        pr.hide += pr.come
+        pr.hide.remove(tile)
+        pr.hide.sort()
+        pr.come = []
+        self.state = 'DELAY_PLAY'
+        threading.Thread(target=self._do_play).start()
 
-    def wait_pong(self, tile):
-        pp = [pr.pongs(tile) for pr in self.prs]
-        # print(f'wait_pong {tile} {[pr.hide for pr in self.prs]} {pp}')
-        if all([len(g) == 0 for g in pp]):
-            # print('wait_pong() nobody can pong')
-            return self.next_mooo()
-        num = [i for i,e in enumerate(pp) if len(e) > 0][0]
-        if num == self.cnum:
-            # print('wait_pong() me can pong')
-            return self.next_mooo()
-        self.anum = num
-        self.atile = tile
-        self.state = 'PONG'
-        # print('wait_pong() somebody can pong')
+    def _do_play(self):
+        print(f'_do_play()')
+        time.sleep(TIME_DELAY)
+        print(f'_do_play() after delay')
+        nums = [(self.cnum + 1 + i) % 4 for i in range(3)]
+        tmp = [self.prs[num].actions(self.ctile, self.num_diff(self.cnum, num)) for num in nums]
+        tmp = [[len(x[key]) == 0 for key in x] for x in tmp]
+        if all([all(x) for x in tmp]):
+            print('_do_play() nobody can action')
+            self.pool += [self.ctile]
+            return self.do_mooo((self.cnum + 1) % 4)
+        print(f'_do_play() {tmp}')
+        for pr in self.prs: 
+            pr.atype, pr.agroup = None, None
+        self.state = 'ACTION'
+        print('_do_play() somebody can action')
         return True
 
-    def wait_song(self):
-        pass
-
-    def next_mooo(self):
-        # print('next_mooo()')
-        self.cnum = (self.cnum + 1) % 4
+    def do_mooo(self, num):
+        print(f'do_mooo() {num}')
+        if len(self.bag) == 0:
+            self.state = 'DRAW'
+            return True
+        self.cnum = num
         pr = self.prs[self.cnum]
         pr.come = [self.bag.pop(0)]
         self.state = 'PLAY'
-        # print('next_mooo() return')
         return True
         
-    def do_bot(self):
-        # print('do_bot()')
+    def do_bot(self, num):
+        # print(f'do_bot() {num}')
         if self.state == 'PLAY':
-            num = self.cnum
+            if num != self.cnum: return False
             pr = self.prs[num]
             tile = random.choice(pr.hide + pr.come)
-            self.do_play(num, tile)
-            return True
-        if self.state == 'PONG':
-            self.do_action(self.anum, 'PONG', [self.atile]*2)
-            return True
+            return self.do_play(num, tile)
+        if self.state == 'ACTION':
+            if num == self.cnum: return False
+            pr = self.prs[num]
+            if pr.atype is not None: return False
+            for atype in ['WOOO','GONG','PONG','SONG']:
+                diff = self.num_diff(self.cnum, num)
+                groups = pr.action(atype, self.ctile, diff)
+                if len(groups) == 0: continue
+                return self.do_action(num, atype, groups[0])
+            return self.do_action(num, 'CANCEL', None)
         return False
 

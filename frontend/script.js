@@ -1,7 +1,7 @@
 
 // var DOMAIN = 'http://jasonisgod.xyz:9001'
 var DOMAIN = 'http://127.0.0.1:9001'
-var POLL_TIME = 1000
+var POLL_TIME = 200
 var NUM = 0
 
 var lastData = {}
@@ -106,6 +106,17 @@ function showPlayer(data, pos) {
     }
 }
 
+function clearLabels() {
+    $('#label-top').html('').removeClass('label-showing')
+    $('#label-bottom').html('').removeClass('label-showing')
+    $('#label-left').html('').removeClass('label-showing')
+    $('#label-right').html('').removeClass('label-showing')
+}
+
+function showLabel(pos, html) {
+    $('#label-' + pos).html(html).addClass('label-showing')
+}
+
 function showPool(data) {
     const ROW = 5, COL = 17
     $(".pool-row").each(function() {
@@ -140,42 +151,28 @@ function onclickTile(this_, id) {
 function onclickAction(atype) {
     console.log('onclick atype', atype)
     var arr = []
-    $(".tile-se").each(function() {
+    $(".tile-se").each(function () {
         arr.push(parseInt($(this).attr('value')))
     })
-    // console.log(arr)
+    console.log(arr)
     if (atype == 'PLAY' && arr.length == 1) {
-        var url = DOMAIN + "/api/play/" + NUM + '/' + arr[0].toString()
-        console.log(url)
-        $.get(url, function(data, status) {
-            console.log(url, data, status)
-        })
+        $.get(DOMAIN + "/api/play/" + NUM + '/' + arr[0].toString())
     }
-    if (atype == 'PONG' && arr.length == 2) {
-        var url = DOMAIN + "/api/action/" + NUM + '/PONG/'+ arr.join(',')
-        console.log(url)
-        $.get(url, function(data, status) {
-            console.log(url, data, status)
-        })
+    if (atype == 'WOOO' || atype == 'GONG' || atype == 'PONG' || atype == 'SONG') {
+        arr.push(lastData.ctile)
+        $.get(DOMAIN + "/api/action/" + NUM + '/' + atype + '/'+ arr.join(','))
     }
     if (atype == 'CANCEL') {
-        var url = DOMAIN + "/api/action/" + NUM + '/CANCEL/99'
-        console.log(url)
-        $.get(url, function(data, status) {
-            console.log(url, data, status)
-        })
+        $.get(DOMAIN + "/api/action/" + NUM + '/CANCEL/99');
     }
     if (atype == 'BOT') {
-        var url = DOMAIN + "/api/bot"
-        $.get(url)
+        $.get(DOMAIN + "/api/bot")
     }
     if (atype == 'START') {
-        var url = DOMAIN + "/api/start"
-        $.get(url)
+        $.get(DOMAIN + "/api/start")
     }
     if (atype == 'RANDOM') {
-        var url = DOMAIN + "/api/start/random"
-        $.get(url)
+        $.get(DOMAIN + "/api/start/random")
     }
 }
 
@@ -186,6 +183,19 @@ function refreshAll(data) {
     showPlayer(data.right, 'right')
     showPool(data.pool)
     showButtons(data.action)
+    clearLabels()
+    if (data.state == 'DELAY_PLAY' || data.state == 'ACTION') {
+        showLabel(data.cpos, tileCode(data.ctile))
+    }
+    if (data.state == 'DELAY_ACTION') {
+        var table = {
+            'WOOO': '糊',
+            'GONG': '槓',
+            'PONG': '碰',
+            'SONG': '上'
+        }
+        showLabel(data.cpos, table[data.atype])
+    }
 }
 
 function getUrlParam(name) {

@@ -13,6 +13,7 @@ logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 game = Game()
 game.start_random()
+game.set_mask(False)
 
 @app.route("/api/start")
 def api_start():

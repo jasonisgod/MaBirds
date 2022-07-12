@@ -104,6 +104,24 @@ body {
     width: 10vh;
 }
 
+.label {
+    position: fixed;
+    margin: 0 auto;
+    transform: translate(-50%, -50%);
+    width: 8vw;
+    height: 8vw;
+    font-size: 6vw;
+    color: #fff;
+    border-radius: 1000px;
+    text-align: center;
+    margin: auto;
+}
+#label-top { left: 50vw; top: 15vh; }
+#label-bottom { left: 50vw; top: 60vh; }
+#label-left { left: 15vw; top: 50vh; }
+#label-right { left: 85vw; top: 50vh; }
+.label-showing { background-color: #0008; }
+
 #pool-box {
     position: fixed;
     left: 50vw;
