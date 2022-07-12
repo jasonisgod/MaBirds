@@ -134,7 +134,7 @@ class Game:
             tmp = (tmp + 1) % 4
         return diff
 
-    def get_data(self, num:int):
+    def get_data(self, num):
         pr = self.prs[num]
         pos_list = ['bottom','left','top','right']
         diff = self.num_diff(self.cnum, num)
@@ -161,7 +161,7 @@ class Game:
             }
         }
     
-    def do_action(self, num:int, atype:str, agroup:list[int]):
+    def do_action(self, num, atype, agroup):
         print(f'do_action() {num} {atype} {agroup}')
         if self.state != 'ACTION':
             return False
@@ -178,13 +178,13 @@ class Game:
             return self.check_action()
         return False
 
-    def do_action_end(self, num:int, atype:str, agroup:list[int]):
+    def do_action_end(self, num, atype, agroup):
         self.cnum = num
         self.atype = atype
         self.state = 'DELAY_ACTION'
         threading.Thread(target=self._do_action_end, args=(num,atype,agroup)).start()
     
-    def _do_action_end(self, num:int, atype:str, agroup:list[int]):
+    def _do_action_end(self, num, atype, agroup):
         print(f'do_action_end() {num} {atype} {agroup}')
         time.sleep(TIME_DELAY)
         print(f'do_action_end() after delay')
@@ -220,7 +220,7 @@ class Game:
         self.pool += [self.ctile]
         return self.do_mooo((self.cnum + 1) % 4)
 
-    def do_play(self, num:int, tile:int):
+    def do_play(self, num, tile):
         print(f'do_play() {num} {tile}')
         if num != self.cnum:
             return False
