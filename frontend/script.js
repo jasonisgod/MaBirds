@@ -1,52 +1,17 @@
 
+var VER_JS = 'v0.2.1'
 // var DOMAIN = 'http://jasonisgod.xyz:9001'
 var DOMAIN = 'http://127.0.0.1:9001'
 var POLL_TIME = 200
 var NUM = 0
 
-var lastData = {}
-
-var tmpdata = {
-    top: {
-        hide: [99,99,99,99,99,99,99,99,99,99],
-        show: [[32,33,34]],
-        come: [],
-    },
-    bottom: {
-        hide: [11,12,27,27,39,41,46],
-        show: [[45,45,45],[37,38,39]],
-        come: [17],
-    },
-    left: {
-        hide: [99,99,99,99,99,99,99,99,99,99],
-        show: [[14,15,16]],
-        come: [],
-    },
-    right: {
-        hide: [99,99,99,99,99,99,99],
-        show: [[42,42,42],[16,17,18]],
-        come: [],
-    },
-    pool: [
-        //43,12,47,47,26,43,29,31,28,11,19,24,35,25,13,26,44,
-        43,12,47,47,26,31,28,11,19,24,35,25,13,26,44,43,29,31,28,11,19,24,35,25,13,26,
-        44,24,35,25,13,26,44,43,29,31,28,11,19,24,35,25,13,26,44,
-    ],
-    action: {
-        play: false,
-        pong: true,
-        song: true,
-        gong: false,
-        wooo: false
-    }
-}
+var DATA = {}
 
 function colorFont(color, text) {
     return "<span style='color:"+color+"'>"+text+"</span>"
 }
 
 function tileCode(id) {
-
     var map = {
         11:'&#x1F019;',12:'&#x1F01A;',13:'&#x1F01B;', // tong
         14:'&#x1F01C;',15:'&#x1F01D;',16:'&#x1F01E;',
@@ -65,13 +30,19 @@ function tileCode(id) {
     return map[id];
 }
 
-function addTiles(div, hv, rev, se, id, pos) {
-    var code = tileCode(id)
+function createTile(hv, se, id, pos) {
+    // var code = tileHtml(id, pos)
+    if (id == 90) return $('<div>')
     var class_ = (hv == 'v'? 'col ': '') + ('tile ') + ('tile-' + hv + ' ') + (se? '': 'tile-bk')
     var onclick_ = (se? 'onclickTile(this, ' + id + ')': '')
-    var tile = $('<div>').addClass(class_).attr('onclick',onclick_).attr('value',id)
-    var text = $('<div>').addClass('tile-' + pos + ' ').html(code)
-    tile.append(text)
+    var img = $('<img>').addClass('tile-img-' + pos).attr('src', 'img/2/' + id + '.png')
+    var div = $('<div>').addClass('tile-' + pos + ' ').append(img)
+    var tile = $('<div>').addClass(class_).attr('onclick',onclick_).attr('value',id).append(div)
+    return tile
+}
+
+function addTile(div, hv, rev, se, id, pos) {
+    var tile = createTile(hv, se, id, pos)
     rev? div.prepend(tile): div.append(tile)
 }
 
@@ -81,7 +52,12 @@ function addGap(div, hv, rev) {
     rev? div.prepend(gap): div.append(gap)
 }
 
-function showPlayer(data, pos) {
+function showPlayer(odata, data, pos) {
+    if (odata != undefined) {
+        if (JSON.stringify(odata) == JSON.stringify(data)) {
+            return
+        }
+    }
     var div = $('#pos-' + pos)
     var self = (pos == 'bottom')
     var hv = (pos == 'top' || pos == 'bottom'? 'v': 'h')
@@ -89,20 +65,20 @@ function showPlayer(data, pos) {
     div.html('')
     data.show.forEach(group => {
         group.forEach(id => {
-            addTiles(div, hv, rev, false, id, pos)
+            addTile(div, hv, rev, false, id, pos)
         })
         addGap(div, hv, rev)
     })
     addGap(div, hv, rev)
     data.hide.forEach(id => {
-        addTiles(div, hv, rev, self, id, pos)
+        addTile(div, hv, rev, self, id, pos)
     })
     addGap(div, hv, rev)
     data.come.forEach(id => {
-        addTiles(div, hv, rev, self, id, pos)
+        addTile(div, hv, rev, self, id, pos)
     })
     if (data.come.length == 0) {
-        addTiles(div, hv, rev, self, 90, pos)
+        addTile(div, hv, rev, self, 90, pos)
     }
 }
 
@@ -113,22 +89,46 @@ function clearLabels() {
     $('#label-right').html('').removeClass('label-showing')
 }
 
-function showLabel(pos, html) {
-    $('#label-' + pos).html(html).addClass('label-showing')
+function showLabel(pos, e) {
+    $('#label-' + pos).addClass('label-showing').append(e)
 }
 
-function showPool(data) {
+function addTileToPool(tile, count) {
     const ROW = 5, COL = 17
+    var row = Math.floor(count / COL)
+    var col = Math.floor(count % COL)
+    var div = $('#pool-row-' + row)
+    addTile(div, 'v', false, false, tile, 'pool')
+}
+
+function clearPool() {
     $(".pool-row").each(function() {
         $(this).html('')
     })
+}
+
+function showPool(odata, data) {
+    if (odata != undefined) {
+        if (odata.toString() == data.toString()) {
+            return
+        }
+        if (odata.length < data.length) {
+            var front = data.slice(0, odata.length)
+            if (odata.toString() == front.toString()) {
+                var count = odata.length
+                var back = data.slice(odata.length, data.length)
+                back.forEach(tile => { 
+                    addTileToPool(tile, count)
+                    count += 1
+                })
+                return
+            }
+        }
+    }
     var count = 0
-    data.forEach(id => {
-        var row = Math.floor(count / COL)
-        var col = Math.floor(count % COL)
-        var div = $('#pool-row-' + row)
-        if (col == 0) div.html('')
-        addTiles(div, 'v', false, false, id, 'pool')
+    clearPool()
+    data.forEach(tile => {
+        addTileToPool(tile, count)
         count += 1;
     })
 }
@@ -159,7 +159,7 @@ function onclickAction(atype) {
         $.get(DOMAIN + "/api/play/" + NUM + '/' + arr[0].toString())
     }
     if (atype == 'WOOO' || atype == 'GONG' || atype == 'PONG' || atype == 'SONG') {
-        arr.push(lastData.ctile)
+        arr.push(DATA.ctile)
         $.get(DOMAIN + "/api/action/" + NUM + '/' + atype + '/'+ arr.join(','))
     }
     if (atype == 'CANCEL') {
@@ -176,25 +176,22 @@ function onclickAction(atype) {
     }
 }
 
-function refreshAll(data) {
-    showPlayer(data.top, 'top')
-    showPlayer(data.bottom, 'bottom')
-    showPlayer(data.left, 'left')
-    showPlayer(data.right, 'right')
-    showPool(data.pool)
+function refreshAll(odata, data) {
+    showPlayer(odata.top, data.top, 'top')
+    showPlayer(odata.bottom, data.bottom, 'bottom')
+    showPlayer(odata.left, data.left, 'left')
+    showPlayer(odata.right, data.right, 'right')
+    showPool(odata.pool, data.pool)
     showButtons(data.action)
     clearLabels()
     if (data.state == 'DELAY_PLAY' || data.state == 'ACTION') {
-        showLabel(data.cpos, tileCode(data.ctile))
+        var tile = createTile('vv', false, data.ctile, 'label')
+        showLabel(data.cpos, tile)
     }
     if (data.state == 'DELAY_ACTION') {
-        var table = {
-            'WOOO': '糊',
-            'GONG': '槓',
-            'PONG': '碰',
-            'SONG': '上'
-        }
-        showLabel(data.cpos, table[data.atype])
+        var table = { 'WOOO': '糊', 'GONG': '槓', 'PONG': '碰', 'SONG': '上' }
+        var span = $('<span>').html(table[data.atype])
+        showLabel(data.cpos, span)
     }
 }
 
@@ -209,12 +206,12 @@ function setPollTimer() {
         $.get(DOMAIN + "/api/data/" + NUM, function(data, status) {
             // console.log(data, status)
             data = JSON.parse(data).data
-            if (JSON.stringify(data) === JSON.stringify(lastData)) {
+            if (JSON.stringify(data) === JSON.stringify(DATA)) {
                 console.log('same')
             } else {
-                lastData = data
                 console.log('new', data)
-                refreshAll(data)
+                refreshAll(DATA, data)
+                DATA = data
             }
         })
     }, POLL_TIME);
@@ -259,4 +256,39 @@ $(function() {
     //     return colorFont(colors[num],'&#x1F000;') + br 
     // }
     // return '　　' // '　'
+    
+var tmpdata = {
+    top: {
+        hide: [99,99,99,99,99,99,99,99,99,99],
+        show: [[32,33,34]],
+        come: [],
+    },
+    bottom: {
+        hide: [11,12,27,27,39,41,46],
+        show: [[45,45,45],[37,38,39]],
+        come: [17],
+    },
+    left: {
+        hide: [99,99,99,99,99,99,99,99,99,99],
+        show: [[14,15,16]],
+        come: [],
+    },
+    right: {
+        hide: [99,99,99,99,99,99,99],
+        show: [[42,42,42],[16,17,18]],
+        come: [],
+    },
+    pool: [
+        //43,12,47,47,26,43,29,31,28,11,19,24,35,25,13,26,44,
+        43,12,47,47,26,31,28,11,19,24,35,25,13,26,44,43,29,31,28,11,19,24,35,25,13,26,
+        44,24,35,25,13,26,44,43,29,31,28,11,19,24,35,25,13,26,44,
+    ],
+    action: {
+        play: false,
+        pong: true,
+        song: true,
+        gong: false,
+        wooo: false
+    }
+}
 */ 

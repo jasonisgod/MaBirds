@@ -157,7 +157,7 @@ class Game:
                 'gong': (self.state == 'ACTION' and len(tmp['GONG']) > 0 and diff != 0),
                 'pong': (self.state == 'ACTION' and len(tmp['PONG']) > 0 and diff != 0),
                 'song': (self.state == 'ACTION' and len(tmp['SONG']) > 0 and diff == 1),
-                'cancel': (self.state == 'ACTION' and len(total) > 0),
+                'cancel': (self.state == 'ACTION' and len(total) > 0 and diff != 0),
             }
         }
     

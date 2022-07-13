@@ -4,11 +4,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="script.js"></script>
 
-<div id="name-tag">#jasonisgod</div>
-<div id="pos-top" class="row"></div>
-<div id="pos-bottom" class="row"></div>
-<div id="pos-left" class=""></div>
-<div id="pos-right" class=""></div>
+<div id="tag-box">
+    <span id="ver-display"></span> 
+    <br>
+    <span id="name-display">#jasonisgod</span>
+</div>
+
+<div id="pos-top" class="pos row"></div>
+<div id="pos-bottom" class="pos row"></div>
+<div id="pos-left" class="pos"></div>
+<div id="pos-right" class="pos"></div>
+
 <div id="pool-box" class="">
     <div id="pool-row-0" class="row pool-row pool-row-even"></div>
     <div id="pool-row-1" class="row pool-row pool-row-odd"></div>
@@ -16,10 +22,12 @@
     <div id="pool-row-3" class="row pool-row pool-row-odd"></div>
     <div id="pool-row-4" class="row pool-row pool-row-even"></div>
 </div>
+
 <div id="label-top" class="label"></div>
 <div id="label-bottom" class="label"></div>
 <div id="label-left" class="label"></div>
 <div id="label-right" class="label"></div>
+
 <div id="action-box" class="row">
     <button id="action-play" class="btn action" onclick="onclickAction('PLAY')">打</button>
     <button id="action-pong" class="btn action" onclick="onclickAction('PONG')">碰</button>
@@ -29,8 +37,13 @@
     <button id="action-cancel" class="btn action" onclick="onclickAction('CANCEL')">過</button>
     <!-- <button id="action-bot" class="btn action" onclick="onclickAction('BOT')">電腦</button> -->
 </div>
+
 <div id="menu-box" class="">
     <button id="action-start" class="btn action" onclick="onclickAction('START')">新局</button>
     <button id="action-random" class="btn action" onclick="onclickAction('RANDOM')">隨機</button>
 </div>
+
+<script>
+    $('#ver-display').html(VER_JS)
+</script>
 <!-- <div class="container"></div> -->
