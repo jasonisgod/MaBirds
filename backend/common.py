@@ -24,8 +24,39 @@ class Player:
             'come': [99] * len(self.come) if mask else self.come,
         }
 
+    def _wooos(self, groups, tiles):
+        if len(tiles) == 0:
+            if [len(g) for g in groups].count(2) != 1: 
+                return []
+            # return [sorted([list(g) for g in groups])]
+            return [sorted([list(g) for g in groups], key=lambda g: len(g), reverse=True)]
+        if len(tiles) == 1:
+            return []
+        tile = tiles[0]
+        count = tiles.count(tile)
+        ans = []
+        if count >= 3:
+            _groups = groups + [[tile] * 3]
+            _tiles = tiles[3:]
+            ans += self._wooos(_groups, _tiles)
+        if count >= 2:
+            _groups = groups + [[tile] * 2]
+            _tiles = tiles[2:]
+            ans += self._wooos(_groups, _tiles)
+        if count >= 1:
+            if 1 <= (tile // 10) <= 3 and 1 <= (tile % 10) <= 7:
+                if (tile + 1) in tiles and (tile + 2) in tiles:
+                    _groups = groups + [[tile,tile+1,tile+2]]
+                    _tiles = tiles
+                    for i in [tile,tile+1,tile+2]: 
+                        _tiles.remove(i)
+                    ans += self._wooos(_groups, _tiles)
+        return ans
+
     def wooos(self, tile):
-        return []
+        ans = self._wooos(self.show, sorted(self.hide + [tile]))
+        ans = [eval(ee) for ee in sorted(set([str(e) for e in ans]))]
+        return ans
 
     def gongs(self, tile):
         if self.hide.count(tile) == 3:
@@ -114,7 +145,7 @@ class Game:
         random.shuffle(groups)
         for i in [0,1,2,3]:
             p = self.prs[i]
-            p.show = [groups.pop(0) for j in range(random.randint(0,2))]
+            p.show = [groups.pop(0) for j in range(random.randint(0,3))]
             for group in p.show:
                 for tile in group:
                     self.bag.remove(tile)
@@ -136,6 +167,7 @@ class Game:
 
     def get_data(self, num):
         pr = self.prs[num]
+        mask = (self.state != 'END')
         pos_list = ['bottom','left','top','right']
         diff = self.num_diff(self.cnum, num)
         tmp = pr.actions(self.ctile, diff)
@@ -148,12 +180,12 @@ class Game:
             'cpos': pos_list[diff],
             'ctile': self.ctile,
             'bottom': self.prs[num].to_dict(False),
-            'right': self.prs[(num + 1) % 4].to_dict(True),
-            'top': self.prs[(num + 2) % 4].to_dict(True),
-            'left': self.prs[(num + 3) % 4].to_dict(True),
+            'right': self.prs[(num + 1) % 4].to_dict(mask),
+            'top': self.prs[(num + 2) % 4].to_dict(mask),
+            'left': self.prs[(num + 3) % 4].to_dict(mask),
             'action': {
                 'play': (self.state == 'PLAY' and num == self.cnum),
-                'wooo': (self.state == 'ACTION' and len(tmp['WOOO']) > 0 and diff != 0),
+                'wooo': (self.state in ['PLAY','ACTION'] and len(tmp['WOOO']) > 0),
                 'gong': (self.state == 'ACTION' and len(tmp['GONG']) > 0 and diff != 0),
                 'pong': (self.state == 'ACTION' and len(tmp['PONG']) > 0 and diff != 0),
                 'song': (self.state == 'ACTION' and len(tmp['SONG']) > 0 and diff == 1),
@@ -166,12 +198,17 @@ class Game:
         if self.state != 'ACTION':
             return False
         pr = self.prs[num]
+        diff = self.num_diff(self.cnum, num)
+        groups = pr.action(atype, self.ctile, diff)
         if atype == 'CANCEL':
             pr.atype = atype
             return self.check_action()
-        if atype in ['WOOO','GONG','PONG','SONG']:
-            diff = self.num_diff(self.cnum, num)
-            if agroup not in pr.action(atype, self.ctile, diff):
+        if atype == 'WOOO':
+            if len(groups) == 0:
+                return False
+            self.check_action()
+        if atype in ['GONG','PONG','SONG']:
+            if agroup not in groups:
                 return False
             pr.atype = atype
             pr.agroup = agroup
@@ -215,7 +252,7 @@ class Game:
                 if len(groups) == 0: continue
                 if pr.atype is None: return True
                 if pr.atype != atype: continue
-                if pr.agroup not in groups: continue
+                if atype != 'WOOO' and pr.agroup not in groups: continue
                 return self.do_action_end(num, pr.atype, pr.agroup)
         self.pool += [self.ctile]
         return self.do_mooo((self.cnum + 1) % 4)
