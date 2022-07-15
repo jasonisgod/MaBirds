@@ -1,5 +1,5 @@
 
-var VER_JS = 'v0.2.1'
+var VER_JS = 'v0.3'
 // var DOMAIN = 'http://jasonisgod.xyz:9001'
 var DOMAIN = 'http://127.0.0.1:9001'
 var POLL_TIME = 200
@@ -219,8 +219,9 @@ function setPollTimer() {
 
 $(function() {
     console.log('ready')
-    // NUM = getUrlParam('num')
     setPollTimer()
+    $("#select-seat").change(function() { NUM = this.value })
+    $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
 });
 
 

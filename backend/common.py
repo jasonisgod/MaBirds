@@ -102,6 +102,7 @@ class Player:
 class Game:
     def __init__(self):
         self.reset()
+        self.bots = [1,2,3]
         
     def reset(self):
         self.prs = [Player() for i in range(4)]
@@ -112,6 +113,10 @@ class Game:
         self.cnum = 0
         self.state = 'STOP'
         self.mask = True
+
+    def set_bots(self, bots):
+        print(f'set_bots() {bots}')
+        self.bots = [i for i in range(4) if str(i) in bots]
 
     def set_mask(self, mask):
         self.mask = mask

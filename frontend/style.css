@@ -95,22 +95,35 @@ body { background-color: #363; }
 }
 
 .action {
-    min-width: 3.5vw;
-    max-width: 3.5vw;
+    min-width: 4.5vw;
+    max-width: 4.5vw;
     min-height: 3vw;
     max-height: 3vw;
     margin: 0.2vh 0.2vw;
     padding: 0.2vh 0.2vw;
     font-size: 1.25vw;
+    /* background-color: #fffd; */
+    border: 0; 
+    border-radius: 2vh;
 }
 
 #menu-box {
     position: fixed;
-    left: 97.5vw;
-    top: 10vh;
-    transform: translate(-50%, -50%);
-    margin: 0 auto;
+    right: 2.5vw;
+    top: 5vh;
+    margin: auto;
 }
+
+#setting-box {
+    position: fixed;
+    right: 2.5vw;
+    bottom: 5vh;
+    margin: auto;
+    color: antiquewhite;
+}
+
+#select-seat { text-align: center; }
+#select-bots { font-size: 2vh; }
 
 #tag-box {
     position: fixed;

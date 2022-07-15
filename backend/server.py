@@ -41,9 +41,13 @@ def api_play(num, tile):
     return d2j({'res':('T' if ok else 'F')})
 
 @app.route("/api/bot")
-@app.route("/api/play/bot")
 def api_bot():
     ok = game.do_bot()
+    return d2j({'res':('T' if ok else 'F')})
+
+@app.route("/api/bots/<bots>")
+def api_bots(bots):
+    ok = game.set_bots(bots)
     return d2j({'res':('T' if ok else 'F')})
 
 start_thread(game)

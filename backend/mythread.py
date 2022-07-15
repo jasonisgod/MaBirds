@@ -5,15 +5,14 @@ TIME_SLEEP = 1 # 2sec
 
 def _thread(game):
     print(f'_thread()')
-    nums = [1,2,3]
     while THREAD:
         time.sleep(0.1)
-        if game.state == 'PLAY' and game.cnum in nums:
+        if game.state == 'PLAY' and game.cnum in game.bots:
             time.sleep(TIME_SLEEP)
             game.do_bot(game.cnum)
         if game.state == 'ACTION':
             time.sleep(TIME_SLEEP)
-            for num in nums:
+            for num in game.bots:
                 if game.prs[num].atype is None:
                     game.do_bot(num)
 
