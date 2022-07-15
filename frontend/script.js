@@ -69,7 +69,6 @@ function showPlayer(odata, data, pos) {
         })
         addGap(div, hv, rev)
     })
-    addGap(div, hv, rev)
     data.hide.forEach(id => {
         addTile(div, hv, rev, self, id, pos)
     })
@@ -77,9 +76,6 @@ function showPlayer(odata, data, pos) {
     data.come.forEach(id => {
         addTile(div, hv, rev, self, id, pos)
     })
-    if (data.come.length == 0) {
-        addTile(div, hv, rev, self, 90, pos)
-    }
 }
 
 function clearLabels() {
@@ -188,9 +184,13 @@ function refreshAll(odata, data) {
         var tile = createTile('vv', false, data.ctile, 'label')
         showLabel(data.cpos, tile)
     }
+    var table = { 'WOOO': '糊', 'GONG': '槓', 'PONG': '碰', 'SONG': '上' }
     if (data.state == 'DELAY_ACTION') {
-        var table = { 'WOOO': '糊', 'GONG': '槓', 'PONG': '碰', 'SONG': '上' }
         var span = $('<span>').html(table[data.atype])
+        showLabel(data.cpos, span)
+    }
+    if (data.state == 'END') {
+        var span = $('<span>').html(table['WOOO'])
         showLabel(data.cpos, span)
     }
 }

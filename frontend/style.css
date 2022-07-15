@@ -57,11 +57,11 @@ body { background-color: #363; }
     border-radius: 1000px;
     text-align: center;
 }
-#label-top { left: 50vw; top: 15vh; }
+#label-top { left: 50vw; top: 25vh; }
 #label-bottom { left: 50vw; top: 60vh; }
 #label-left { left: 20vw; top: 50vh; }
 #label-right { left: 80vw; top: 50vh; }
-.label-showing { background-color: #0008; }
+.label-showing { background-color: #000d; }
 
 #pool-box {
     position: fixed;
