@@ -122,6 +122,7 @@ body { background-color: #363; }
     color: antiquewhite;
 }
 
+#select-skin { text-align: center; }
 #select-seat { text-align: center; }
 #select-bots { font-size: 2vh; }
 

@@ -4,6 +4,8 @@ var VER_JS = 'v0.3'
 var DOMAIN = 'http://127.0.0.1:9001'
 var POLL_TIME = 200
 var NUM = 0
+var SKIN = 2
+var isSkinRefreshNeed = false
 
 var DATA = {}
 
@@ -35,7 +37,7 @@ function createTile(hv, se, id, pos) {
     if (id == 90) return $('<div>')
     var class_ = (hv == 'v'? 'col ': '') + ('tile ') + ('tile-' + hv + ' ') + (se? '': 'tile-bk')
     var onclick_ = (se? 'onclickTile(this, ' + id + ')': '')
-    var img = $('<img>').addClass('tile-img-' + pos).attr('src', 'img/2/' + id + '.png')
+    var img = $('<img>').addClass('tile-img-' + pos).attr('src', 'img/' + SKIN + '/' + id + '.png')
     var div = $('<div>').addClass('tile-' + pos + ' ').append(img)
     var tile = $('<div>').addClass(class_).attr('onclick',onclick_).attr('value',id).append(div)
     return tile
@@ -53,7 +55,7 @@ function addGap(div, hv, rev) {
 }
 
 function showPlayer(odata, data, pos) {
-    if (odata != undefined) {
+    if (odata != undefined && !isSkinRefreshNeed) {
         if (JSON.stringify(odata) == JSON.stringify(data)) {
             return
         }
@@ -103,8 +105,8 @@ function clearPool() {
     })
 }
 
-function showPool(odata, data) {
-    if (odata != undefined) {
+function showPool(odata, data) { 
+    if (odata != undefined && !isSkinRefreshNeed) {
         if (odata.toString() == data.toString()) {
             return
         }
@@ -193,6 +195,7 @@ function refreshAll(odata, data) {
         var span = $('<span>').html(table['WOOO'])
         showLabel(data.cpos, span)
     }
+    isSkinRefreshNeed = false
 }
 
 function getUrlParam(name) {
@@ -206,7 +209,7 @@ function setPollTimer() {
         $.get(DOMAIN + "/api/data/" + NUM, function(data, status) {
             // console.log(data, status)
             data = JSON.parse(data).data
-            if (JSON.stringify(data) === JSON.stringify(DATA)) {
+            if (JSON.stringify(data) === JSON.stringify(DATA) && !isSkinRefreshNeed) {
                 console.log('same')
             } else {
                 console.log('new', data)
@@ -220,6 +223,7 @@ function setPollTimer() {
 $(function() {
     console.log('ready')
     setPollTimer()
+    $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
 });
