@@ -1,5 +1,14 @@
 
-body { background-color: #363; }
+@media only screen and (orientation:portrait) {
+    #rotate-box { display:block; }
+    #container { display:none; }
+    body { background-color: white; }
+}
+@media only screen and (orientation:landscape) {
+    #rotate-box { display:none; }
+    #container { display:block; }
+    body { background-color: #363; }
+}
 
 .tile {
     text-align: center;
