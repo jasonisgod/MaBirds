@@ -51,7 +51,7 @@
     margin: 0 auto;
 }
 #pos-top { right: 20vw; top: 5vh; }
-#pos-bottom { left: 20vw; top: 85vh; }
+#pos-bottom { left: 20vw; top: 80vh; }
 #pos-left { left: 10vw; top: 10vh; }
 #pos-right { left: 85vw; bottom: 10vh; }
 
@@ -79,7 +79,7 @@
     margin: 0 auto;
     padding: 2vh 2vw;
     min-width: 60vw; max-width: 65vw;
-    min-height: 65vh; max-height: 65vh;
+    min-height: 60vh; max-height: 60vh;
 }
 
 .pool-row {
@@ -98,7 +98,7 @@
 #action-box {
     position: fixed;
     left: 50vw;
-    top: 77.5vh;
+    top: 72.5vh;
     transform: translate(-50%, -50%);
     margin: 0 auto;
 }
@@ -123,22 +123,11 @@
     background-color: #fff2;
 }
 
-#start-btn { top:50vh; left:50vw; position:fixed; }
+#start-btn { position:fixed; top:50vh; left:50vw; transform: translate(-50%, -50%); }
 
-#menu-box {
-    position: fixed;
-    right: 2.5vw;
-    top: 5vh;
-    margin: auto;
-}
-
-#setting-box {
-    position: fixed;
-    right: 2.5vw;
-    bottom: 5vh;
-    margin: auto;
-    color: antiquewhite;
-}
+#menu-box { position: fixed; left: 2.5vw; top: 5vh; margin: auto;}
+#control-box { position: fixed; right: 2.5vw; top: 5vh; margin: auto;}
+#setting-box { position: fixed; right: 2.5vw; bottom: 5vh; margin: auto; color: antiquewhite; }
 
 #select-skin { text-align: center; }
 #select-seat { text-align: center; }
