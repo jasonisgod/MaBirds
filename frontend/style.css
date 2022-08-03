@@ -2,12 +2,12 @@
 @media only screen and (orientation:portrait) {
     #rotate-box { display:block; }
     #container { display:none; }
-    body { background-color: white; }
+    body, #rotate-box { background-color: #fff; }
 }
 @media only screen and (orientation:landscape) {
     #rotate-box { display:none; }
     #container { display:block; }
-    body { background-color: #363; }
+    body, #container { background-color: #363; }
 }
 
 .tile {
@@ -111,10 +111,19 @@
     margin: 0.2vh 0.2vw;
     padding: 0.2vh 0.2vw;
     font-size: 1.25vw;
-    /* background-color: #fffd; */
+    background-color: #fffd;
     border: 0; 
     border-radius: 2vh;
+    cursor: pointer;
 }
+.action:hover {
+    background-color: #fff8;
+}
+.action:disabled {
+    background-color: #fff2;
+}
+
+#start-btn { top:50vh; left:50vw; position:fixed; }
 
 #menu-box {
     position: fixed;

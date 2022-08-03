@@ -1,77 +1,80 @@
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="stylesheet" href="style.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="script.js"></script>
 
 <div id="rotate-box">
-    Please rotate your phone.
     <img src="img/rotate.png" width="100%">
 </div>
 
 <div id="container">
-
-<div id="tag-box">
-    <span id="ver-display"></span> 
-    <br>
-    <span id="name-display">#jasonisgod</span>
-</div>
-
-<div id="pos-top" class="pos row"></div>
-<div id="pos-bottom" class="pos row"></div>
-<div id="pos-left" class="pos"></div>
-<div id="pos-right" class="pos"></div>
-
-<div id="pool-box" class="">
-    <div id="pool-row-0" class="row pool-row pool-row-even"></div>
-    <div id="pool-row-1" class="row pool-row pool-row-odd"></div>
-    <div id="pool-row-2" class="row pool-row pool-row-even"></div>
-    <div id="pool-row-3" class="row pool-row pool-row-odd"></div>
-    <div id="pool-row-4" class="row pool-row pool-row-even"></div>
-</div>
-
-<div id="label-top" class="label"></div>
-<div id="label-bottom" class="label"></div>
-<div id="label-left" class="label"></div>
-<div id="label-right" class="label"></div>
-
-<div id="action-box" class="row">
-    <button id="action-cancel" class="btn action" onclick="onclickAction('CANCEL')">過</button>
-    <button id="action-gong" class="btn action" onclick="onclickAction('GONG')">槓</button>
-    <button id="action-pong" class="btn action" onclick="onclickAction('PONG')">碰</button>
-    <button id="action-song" class="btn action" onclick="onclickAction('SONG')">上</button>
-    <button id="action-wooo" class="btn action" onclick="onclickAction('WOOO')">糊</button>
-    <button id="action-play" class="btn action" onclick="onclickAction('PLAY')">打</button>
-    <!-- <button id="action-bot" class="btn action" onclick="onclickAction('BOT')">電腦</button> -->
-</div>
-
-<div id="menu-box" class="">
-    <button id="action-start" class="btn action" onclick="onclickAction('START')">新局</button> <br>
-    <button id="action-random" class="btn action" onclick="onclickAction('RANDOM')">隨機</button> <br>
-</div>
-<div id="setting-box" class="">
-    <span>材質:</span> <br>
-    <select id="select-skin" class="btn action">
-        <!-- <option value="1">1</option> -->
-        <option value="2">2</option>
-        <option value="3">3</option>
-    </select> <br>
-    <span>玩家:</span> <br>
-    <select id="select-seat" class="btn action">
-        <option value="0">東</option>
-        <option value="1">南</option>
-        <option value="2">西</option>
-        <option value="3">北</option>
-    </select> <br>
-    <span>電腦:</span> <br>
-    <select id="select-bots" class="btn action">
-        <option value="1,2,3,">南西北</option>
-        <option value="1,3,">南北</option>
-        <option value="1,">南</option>
-        <option value=",">無</option>
-    </select> <br>
-</div>
-
+    <div id="start-box">
+        <button id="start-btn" class="btn action">開始</button>
+    </div>
+    <div id="main-box" style="display: none;">
+        <div id="tag-box">
+            <span id="ver-display"></span> 
+            <br>
+            <span id="name-display">#jasonisgod</span>
+        </div>
+        
+        <div id="pos-top" class="pos row"></div>
+        <div id="pos-bottom" class="pos row"></div>
+        <div id="pos-left" class="pos"></div>
+        <div id="pos-right" class="pos"></div>
+        
+        <div id="pool-box" class="">
+            <div id="pool-row-0" class="row pool-row pool-row-even"></div>
+            <div id="pool-row-1" class="row pool-row pool-row-odd"></div>
+            <div id="pool-row-2" class="row pool-row pool-row-even"></div>
+            <div id="pool-row-3" class="row pool-row pool-row-odd"></div>
+            <div id="pool-row-4" class="row pool-row pool-row-even"></div>
+        </div>
+        
+        <div id="label-top" class="label"></div>
+        <div id="label-bottom" class="label"></div>
+        <div id="label-left" class="label"></div>
+        <div id="label-right" class="label"></div>
+        
+        <div id="action-box" class="row">
+            <button id="action-cancel" class="btn action" onclick="onclickAction('CANCEL')">過</button>
+            <button id="action-gong" class="btn action" onclick="onclickAction('GONG')">槓</button>
+            <button id="action-pong" class="btn action" onclick="onclickAction('PONG')">碰</button>
+            <button id="action-song" class="btn action" onclick="onclickAction('SONG')">上</button>
+            <button id="action-wooo" class="btn action" onclick="onclickAction('WOOO')">糊</button>
+            <button id="action-play" class="btn action" onclick="onclickAction('PLAY')">打</button>
+            <!-- <button id="action-bot" class="btn action" onclick="onclickAction('BOT')">電腦</button> -->
+        </div>
+        
+        <div id="menu-box" class="">
+            <button id="action-start" class="btn action" onclick="onclickAction('START')">新局</button> <br>
+            <button id="action-random" class="btn action" onclick="onclickAction('RANDOM')">隨機</button> <br>
+        </div>
+        <div id="setting-box" class="">
+            <span>材質:</span> <br>
+            <select id="select-skin" class="btn action">
+                <!-- <option value="1">1</option> -->
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select> <br>
+            <span>玩家:</span> <br>
+            <select id="select-seat" class="btn action">
+                <option value="0">東</option>
+                <option value="1">南</option>
+                <option value="2">西</option>
+                <option value="3">北</option>
+            </select> <br>
+            <span>電腦:</span> <br>
+            <select id="select-bots" class="btn action">
+                <option value="1,2,3,">南西北</option>
+                <option value="1,3,">南北</option>
+                <option value="1,">南</option>
+                <option value=",">無</option>
+            </select> <br>
+        </div>
+    </div>
 </div>
 
 <script>

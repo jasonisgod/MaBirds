@@ -220,12 +220,40 @@ function setPollTimer() {
     }, POLL_TIME);
 }
 
+function screenLock() {
+    if (document.documentElement.requestFullscreen) {
+        document.querySelector("#container").requestFullscreen()
+    } else if (document.documentElement.webkitRequestFullScreen) {
+        document.querySelector("#container").webkitRequestFullScreen()
+    }
+    if (document.webkitFullscreenElement) {
+        document.webkitCancelFullScreen()
+    } else {
+        const el = document.documentElement
+        el.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
+    }
+    console.log('screen.orientation before lock',screen.orientation)
+    screen.orientation.lock("landscape")
+        .then(function() {
+            console.log('screen.orientation after lock',screen.orientation)
+        })
+        .catch(function(error) {
+            console.log('screen.orientation after lock',screen.orientation)
+            console.log('screen.orientation.lock error', error)
+    });
+}
+
 $(function() {
     console.log('ready')
     setPollTimer()
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
+    $("#start-btn").click(function() { 
+        $("#start-box").hide()
+        $("#main-box").show()
+        screenLock()
+    })
 });
 
 
