@@ -243,8 +243,27 @@ function screenLock() {
     });
 }
 
+function preloadImages() {
+    var nums = [
+        11,12,13,14,15,16,17,18,19,
+        21,22,23,24,25,26,27,28,29,
+        31,32,33,34,35,36,37,38,39,
+        41,42,43,44,45,46,47,90,99
+    ]
+    var skins = [2,3]
+    skins.forEach(skin => {
+        nums.forEach(num => {
+            var src = 'img/' + skin + '/' + num + '.png'
+            var img = $('<img />').attr('src', src)
+            $("#preload-box").append(img)
+            // console.log('preloadImages()', skin, num)
+        });
+    });
+}
+
 $(function() {
     console.log('ready')
+    preloadImages()
     setPollTimer()
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })

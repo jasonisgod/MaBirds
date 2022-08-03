@@ -142,7 +142,7 @@
 
 #select-skin { text-align: center; }
 #select-seat { text-align: center; }
-#select-bots { font-size: 2vh; }
+/* #select-bots { font-size: 2vh; } */
 
 #tag-box {
     position: fixed;
