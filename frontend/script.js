@@ -1,5 +1,5 @@
 
-var VER_JS = 'v0.4.1'
+var VER_JS = 'v0.4.2'
 // var DOMAIN = 'http://jasonisgod.xyz:9001'
 var DOMAIN = 'http://127.0.0.1:9001'
 var POLL_TIME = 200
