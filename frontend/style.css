@@ -79,7 +79,7 @@
     margin: 0 auto;
     padding: 2vh 2vw;
     min-width: 60vw; max-width: 65vw;
-    min-height: 60vh; max-height: 60vh;
+    min-height: 50vh; max-height: 50vh;
 }
 
 .pool-row {
@@ -122,6 +122,10 @@
 .action:disabled {
     background-color: #fff2;
 }
+.action-s {
+    min-width: 6vw;
+    max-width: 6vw;
+}
 
 #start-btn { position:fixed; top:50vh; left:50vw; transform: translate(-50%, -50%); }
 
@@ -129,6 +133,7 @@
 #control-box { position: fixed; right: 2.5vw; top: 5vh; margin: auto;}
 #setting-box { position: fixed; right: 2.5vw; bottom: 5vh; margin: auto; color: antiquewhite; }
 
+#select-trans { text-align: center; }
 #select-skin { text-align: center; }
 #select-seat { text-align: center; }
 /* #select-bots { font-size: 2vh; } */

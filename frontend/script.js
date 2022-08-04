@@ -1,5 +1,5 @@
 
-var VER_JS = 'v0.3'
+var VER_JS = 'v0.4.1'
 // var DOMAIN = 'http://jasonisgod.xyz:9001'
 var DOMAIN = 'http://127.0.0.1:9001'
 var POLL_TIME = 200
@@ -272,6 +272,11 @@ $(function() {
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
+    $("#select-trans").change(function() { 
+        // var transform = 'translateY(' + this.value + ')'
+        $('#pos-bottom').css('margin-top',this.value) 
+        $('#action-box').css('margin-top',this.value) 
+    })
     $("#start-btn").click(function() { 
         $("#start-box").hide()
         $("#main-box").show()
