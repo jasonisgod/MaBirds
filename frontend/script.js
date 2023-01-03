@@ -1,5 +1,5 @@
 
-var VER_JS = 'v0.4.2'
+var VER_JS = 'v0.5'
 
 var POLL_TIME = 200
 var NUM = 0
