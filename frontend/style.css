@@ -7,7 +7,7 @@
 @media only screen and (orientation:landscape) {
     #rotate-box { display:none; }
     #container { display:block; }
-    body, #container { background-color: #363; }
+    body, #container { background-color: #888; }
 }
 
 .tile {
