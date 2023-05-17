@@ -2,7 +2,7 @@ import json, sys, random, logging, threading, time
 from flask import Flask, request, render_template
 from flask_cors import CORS
 
-TIME_DELAY = 1  # 1sec
+TIME_DELAY = 1 # sec
 
 # utils
 def d2j(d): return json.dumps(d)
@@ -374,7 +374,7 @@ class Game:
         if self.state == 'PLAY':
             if num != self.cnum: return False
             pr = self.prs[num]
-            if pr.atype is not None: return False
+            # if pr.atype is not None: return False
             for atype in ['WOOO','GONG']:
                 groups = pr.action_self(atype, self.ctile)
                 if len(groups) == 0: continue
@@ -384,12 +384,12 @@ class Game:
         if self.state == 'ACTION':
             if num == self.cnum: return False
             pr = self.prs[num]
-            if pr.atype is not None: return False
+            # if pr.atype is not None: return False
             for atype in ['WOOO','GONG','PONG','SONG']:
                 diff = self.num_diff(self.cnum, num)
                 groups = pr.action(atype, self.ctile, diff)
                 if len(groups) == 0: continue
                 return self.do_action(num, atype, groups[0])
-            return self.do_action(num, 'CANCEL', None)
+            # return self.do_action(num, 'CANCEL', None)
         return False
 

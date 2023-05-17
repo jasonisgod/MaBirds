@@ -1,12 +1,12 @@
 from common import *
 
 THREAD = True
-TIME_SLEEP = 1 # 2sec
+TIME_SLEEP = 1 # sec
 
 def _thread(game):
     print(f'_thread()')
     while THREAD:
-        time.sleep(0.1)
+        time.sleep(TIME_SLEEP)
         if game.state == 'PLAY' and game.cnum in game.bots:
             time.sleep(TIME_SLEEP)
             game.do_bot(game.cnum)
