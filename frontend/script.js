@@ -1,11 +1,10 @@
 
-var VER_JS = 'v0.4.2'
-// var DOMAIN = 'http://jasonisgod.xyz:9001'
-var DOMAIN = 'http://127.0.0.1:9001'
+var VER_JS = 'v0.5'
+
 var POLL_TIME = 200
 var NUM = 0
-var SKIN = 2
-var isSkinRefreshNeed = false
+var SKIN = 4
+var isSkinRefreshNeed = true
 
 var DATA = {}
 
@@ -176,7 +175,17 @@ function onclickAction(atype) {
     }
 }
 
+function showBgImg() {
+    if (!isSkinRefreshNeed) {
+        return
+    }
+    $('body').css("background-image", "url(img/" + SKIN + "/bg.png)");
+    $('#container').css("background-image", "url(img/" + SKIN + "/bg.png)");
+    // $('body').css("background-repeat", "repeat");
+}
+
 function refreshAll(odata, data) {
+    showBgImg();
     showPlayer(odata.top, data.top, 'top')
     showPlayer(odata.bottom, data.bottom, 'bottom')
     showPlayer(odata.left, data.left, 'left')
@@ -293,7 +302,7 @@ $(function() {
         $("#main-box").show()
         $("#menu-box").show()
         $("#menu-mask").show()
-        // screenLock()
+        // // screenLock()
     })
 });
 
