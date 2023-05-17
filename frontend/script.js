@@ -1,9 +1,7 @@
 
-var VER_JS = 'v0.5'
-
 var POLL_TIME = 200
 var NUM = 0
-var SKIN = 4
+var SKIN = 2
 var isSkinRefreshNeed = true
 
 var DATA = {}
@@ -265,7 +263,7 @@ function preloadImages() {
         31,32,33,34,35,36,37,38,39,
         41,42,43,44,45,46,47,90,99
     ]
-    var skins = [2,3]
+    var skins = [2,3,4]
     skins.forEach(skin => {
         nums.forEach(num => {
             var src = 'img/' + skin + '/' + num + '.png'
