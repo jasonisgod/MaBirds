@@ -326,7 +326,7 @@ class Game:
 
     def do_play(self, num, tile):
         print(f'do_play() {num} {tile}')
-        if num != self.cnum:
+        if self.state != 'PLAY' or num != self.cnum:
             return False
         pr = self.prs[self.cnum]
         if tile not in (pr.hide + pr.come):
