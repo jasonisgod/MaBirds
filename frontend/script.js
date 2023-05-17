@@ -265,6 +265,11 @@ function preloadImages() {
     });
 }
 
+function toggleMenu() {
+    $("#menu-box").toggle();
+    $("#menu-mask").toggle();
+}
+
 $(function() {
     console.log('ready')
     preloadImages()
@@ -277,10 +282,16 @@ $(function() {
         $('#pos-bottom').css('margin-top',this.value) 
         $('#action-box').css('margin-top',this.value) 
     })
+    $("#start-box").show()
+    $("#main-box").hide()
+    $("#menu-box").hide()
+    $("#menu-mask").hide()
     $("#start-btn").click(function() { 
         $("#start-box").hide()
         $("#main-box").show()
-        screenLock()
+        $("#menu-box").show()
+        $("#menu-mask").show()
+        // screenLock()
     })
 });
 

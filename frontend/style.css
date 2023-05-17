@@ -28,6 +28,12 @@
     }
 }
 
+body {
+    margin: 0;;
+    display: flex;
+    align-items: center;
+}
+
 .tile {
     text-align: center;
     /* padding: 0.5vh 0.2vw; */
@@ -78,6 +84,11 @@
     cursor: not-allowed;
 }
 
+#pos-bottom > .tile-bk {
+    width: 2.5vw;
+    margin-top: 1vw;
+}
+
 .tile-img-top,
 .tile-img-bottom,
 .tile-img-label,
@@ -116,20 +127,21 @@
 }
 
 #pos-bottom {
-    left: 15vw;
-    top: 80vh;
+    left: 5vw;
+    top: 82.5vh;
     scale: 1.5;
-    z-index: 10;
+    z-index: 3;
+    transform-origin: top left;
 }
 
 #pos-left {
     left: 10vw;
-    top: 10vh;
+    top: 5vh;
 }
 
 #pos-right {
     left: 85vw;
-    bottom: 20vh;
+    bottom: 22.5vh;
 }
 
 .label {
@@ -203,13 +215,14 @@
 }
 
 .action {
-    min-width: 4.5vw;
-    max-width: 4.5vw;
+    min-width: 5vw;
+    max-width: 5vw;
     min-height: 3vw;
     max-height: 3vw;
     margin: 0.2vh 0.2vw;
-    padding: 0.2vh 0.2vw;
-    font-size: 1.25vw;
+    /* padding: 0.2vh 0.2vw; */
+    font-size: 1.75vw;
+    font-weight: bold;
     background-color: #fffd;
     border: 0;
     border-radius: 2vh;
@@ -225,8 +238,12 @@
 }
 
 .action-s {
-    min-width: 6vw;
-    max-width: 6vw;
+    font-weight: normal;
+    min-width: 20vw;
+    max-width: 20vw;
+    min-height: 3vw;
+    max-height: 3vw;
+    font-size: 2vw;
 }
 
 #start-btn {
@@ -237,36 +254,31 @@
 }
 
 #menu-box {
-    position: fixed;
-    left: 2.5vw;
-    top: 5vh;
     margin: auto;
-}
-
-#control-box {
-    position: fixed;
-    right: 2.5vw;
-    top: 5vh;
-    margin: auto;
-}
-
-#setting-box {
-    position: fixed;
-    right: 2.5vw;
-    bottom: 5vh;
-    margin: auto;
-    color: antiquewhite;
-}
-
-#select-trans {
     text-align: center;
+    padding: 10px;
+    background-color: #363;
+    border-radius: 20px;
+    position: fixed;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow:  10px 8px 10px 5px black;   
 }
 
-#select-skin {
-    text-align: center;
+#menu-mask {
+    position: fixed;
+    background-color: #000b;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-#select-seat {
+.btn-center {
     text-align: center;
 }
 
@@ -274,9 +286,9 @@
 
 #tag-box {
     position: fixed;
-    left: 3vw;
+    right: 3vw;
     bottom: 3vh;
-    color: antiquewhite;
+    color: white;
     font-size: 3vh;
 }
 
@@ -285,3 +297,27 @@
 }
 
 /* .col { display: unset; } */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-item {
+    padding: 20px;
+    text-align: center;
+}
+
+.btn-label {
+    color: white;
+    font-size: 2vw;
+}
+
+#menu-btn {
+    position: fixed;
+    right: 3vw;
+    top: 3vh;
+    width: 3vw;
+    height: 3vw;
+}
