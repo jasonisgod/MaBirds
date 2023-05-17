@@ -61,6 +61,12 @@ class Player:
     def gongs(self, tile):
         if self.hide.count(tile) == 3:
             return [[tile] * 4]
+        return self.umgongs(tile)
+
+    def umgongs(self, tile):
+        tmp = [g for g in self.show if g[0] == g[1]]
+        if len(tmp) == 1 and tmp[0][0] == tile:
+            return [[tile] * 4]
         return []
 
     def pongs(self, tile):
@@ -159,10 +165,13 @@ class Game:
             p.hide = [self.bag.pop(0) for j in range(13 - 3 * len(p.show))]
             p.hide.sort()
             p.come = []
-        # tmp = [11,11,11,12,12,12,13,13,13,14,14,14,15]
-        # self.prs[0].hide = tmp
-        # self.prs[0].show = []
         self.pool = [self.bag.pop(0) for i in range(random.randint(30,70))]
+        ### debug scenario
+        # self.prs[0].hide = [11,11,11,12,12,12,13,13,13,15]
+        # self.prs[0].show = [[26,26,26]]
+        # self.bag[0] = 26
+        # self.bag[1] = 11
+        # self.bag[2] = 15
         # self.prs[0].come = [self.bag.pop(0)]
         # self.state = 'PLAY'
         return self.do_mooo(0)
@@ -219,8 +228,6 @@ class Game:
                     return False
                 return self.do_action_end(num, atype, agroup)
             if atype in ['GONG']:
-                if agroup not in groups:
-                    return False
                 return self.do_action_end(num, atype, agroup)
             return False
         if self.state == 'ACTION':
@@ -232,7 +239,9 @@ class Game:
                 if len(groups) == 0:
                     return False
                 return self.check_action()
-            if atype in ['GONG','PONG','SONG']:
+            if atype in ['GONG','PONG']:
+                return self.check_action()
+            if atype in ['SONG']:
                 if agroup not in groups:
                     return False
                 return self.check_action()
@@ -256,29 +265,51 @@ class Game:
             self.cnum = num
             pr.come = [self.ctile]
             return True
-        if atype in ['GONG','PONG','SONG']:
+        if atype == 'SONG':
             pr.hide.append(self.ctile)
             for tile in agroup:
                 pr.hide.remove(tile)
             pr.hide.sort()
             pr.show.append(sorted(agroup))
-            if atype in ['PONG','SONG']:
-                self.state = 'PLAY'
-                return True
+            self.state = 'PLAY'
+            self.ctile = 0
+            return True
+        if atype == 'PONG':
+            for _ in range(2):
+                pr.hide.remove(self.ctile)
+            pr.hide.sort()
+            pr.show.append([self.ctile] * 3)
+            self.state = 'PLAY'
+            self.ctile = 0
+            return True
+        if atype == 'GONG':
+            if len(pr.umgongs(self.ctile)) > 0:
+                for g in pr.show:
+                    if self.ctile in g:
+                        g.append(self.ctile)
+                        break
+            else:
+                for _ in range(3):
+                    pr.hide.remove(self.ctile)
+                pr.hide.sort()
+                pr.show.append([self.ctile] * 4)
             return self.do_mooo(num)
         return False
     
     def check_action(self):
+        print('check_action()')
         nums = [(self.cnum + 1 + i) % 4 for i in range(3)]
         for atype in ['WOOO','GONG','PONG','SONG']:
             for num in nums:
                 pr = self.prs[num]
                 diff = self.num_diff(self.cnum, num)
                 groups = pr.action(atype, self.ctile, diff)
+                print('check_action', 'groups', groups)
                 if len(groups) == 0: continue
                 if pr.atype is None: return True
                 if pr.atype != atype: continue
-                if atype != 'WOOO' and pr.agroup not in groups: continue
+                # if atype != 'WOOO' and pr.agroup not in groups: continue
+                if atype == 'SONG' and pr.agroup not in groups: continue
                 return self.do_action_end(num, pr.atype, pr.agroup)
         self.pool += [self.ctile]
         return self.do_mooo((self.cnum + 1) % 4)
