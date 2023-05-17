@@ -139,6 +139,8 @@ function showButtons(data) {
     $('#action-wooo').prop('disabled', !data.wooo);
     $('#action-cancel').prop('disabled', !data.cancel);
     $('#action-bot').prop('disabled', data.play);
+    var flag = data.play || data.pong || data.song || data.gong || data.wooo || data.cancel;
+    $('#action-box').css("visibility", flag? "visible": "hidden");
 }
 
 function onclickTile(this_, id) {
