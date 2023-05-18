@@ -1,8 +1,10 @@
 
 var POLL_TIME = 200
 var NUM = 0
-var SKIN = 2
+var SKIN = 4
 var isSkinRefreshNeed = true
+var audioEndTime = 0;
+var audio;
 
 var DATA = {}
 
@@ -213,6 +215,33 @@ function getUrlParam(name) {
     if (r!=null) return unescape(r[2]); return null;
 }
 
+function playAudio(odata, data) {
+    function _playAudio(idx) {
+        var startTime = idx
+        audioEndTime = startTime + 0.9
+        audio.currentTime = startTime
+        audio.play()
+    }
+    console.log('playAudio()')
+    var TABLE = [
+        11,12,13,14,15,16,17,18,19,
+        21,22,23,24,25,26,27,28,29,
+        31,32,33,34,35,36,37,38,39,
+        41,42,43,44,45,46,47,
+        "PONG", "SONG", "GONG", "WOOO"
+    ]
+    if (odata.state != 'DELAY_PLAY' && data.state == 'DELAY_PLAY') {
+        console.log('playAudio() play', data.ctile)
+        var idx = TABLE.findIndex(e => e == data.ctile)
+        _playAudio(idx)
+    }
+    if (odata.state != 'DELAY_ACTION' && data.state == 'DELAY_ACTION') {
+        console.log('playAudio() action', data.atype)
+        var idx = TABLE.findIndex(e => e == data.atype)
+        _playAudio(idx)
+    }
+}
+
 function setPollTimer() {
     setInterval(() => {
         $.get(DOMAIN + "/api/data/" + NUM, function(data, status) {
@@ -223,6 +252,7 @@ function setPollTimer() {
             } else {
                 console.log('new', data)
                 refreshAll(DATA, data)
+                playAudio(DATA, data)
                 DATA = data
             }
         })
@@ -279,10 +309,21 @@ function toggleMenu() {
     $("#menu-mask").toggle();
 }
 
+function audioInit() {
+    audio = document.getElementById('audio-mp3');
+    audio.addEventListener('timeupdate', function (){
+        if (audioEndTime && audio.currentTime >= audioEndTime) {
+            audio.pause();
+        }   
+        console.log('audio timeupdate', audio.currentTime);
+    }, false);
+}
+
 $(function() {
     console.log('ready')
     preloadImages()
     setPollTimer()
+    audioInit()
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
