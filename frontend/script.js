@@ -215,30 +215,19 @@ function getUrlParam(name) {
     if (r!=null) return unescape(r[2]); return null;
 }
 
+function playAudioName(name) {
+    audio.src = 'audio/' + name + '.mp3';
+    audio.play()
+}
+
 function playAudio(odata, data) {
-    function _playAudio(idx) {
-        var startTime = idx
-        audioEndTime = startTime + 0.9
-        audio.currentTime = startTime
-        audio.play()
-    }
-    console.log('playAudio()')
-    var TABLE = [
-        11,12,13,14,15,16,17,18,19,
-        21,22,23,24,25,26,27,28,29,
-        31,32,33,34,35,36,37,38,39,
-        41,42,43,44,45,46,47,
-        "PONG", "SONG", "GONG", "WOOO"
-    ]
     if (odata.state != 'DELAY_PLAY' && data.state == 'DELAY_PLAY') {
         console.log('playAudio() play', data.ctile)
-        var idx = TABLE.findIndex(e => e == data.ctile)
-        _playAudio(idx)
+        playAudioName(data.ctile)
     }
     if (odata.state != 'DELAY_ACTION' && data.state == 'DELAY_ACTION') {
         console.log('playAudio() action', data.atype)
-        var idx = TABLE.findIndex(e => e == data.atype)
-        _playAudio(idx)
+        playAudioName(data.atype)
     }
 }
 
@@ -317,13 +306,13 @@ function audioInit() {
         }   
         console.log('audio timeupdate', audio.currentTime);
     }, false);
+    playAudioName('START')
 }
 
 $(function() {
     console.log('ready')
     preloadImages()
     setPollTimer()
-    audioInit()
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
@@ -341,7 +330,8 @@ $(function() {
         $("#main-box").show()
         $("#menu-box").show()
         $("#menu-mask").show()
-        // // screenLock()
+        audioInit()
+        // screenLock()
     })
 });
 
