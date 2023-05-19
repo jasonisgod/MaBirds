@@ -179,9 +179,10 @@ function showBgImg() {
     if (!isSkinRefreshNeed) {
         return
     }
-    // $('body').css("background-image", "url(img/" + SKIN + "/bg.png)");
-    $('#container').css("background-image", "url(img/" + SKIN + "/bg.png)");
-    // $('body').css("background-repeat", "repeat");
+    var bgImg = "url(img/" + SKIN + "/bg.png)"
+    $('body').css("background-image", bgImg)
+    $('#container').css("background-image", bgImg)
+    $('#menu-box').css("background-image", bgImg)
 }
 
 function refreshAll(odata, data) {
@@ -318,6 +319,8 @@ $(function() {
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
     $("#select-trans").change(function() { 
         // var transform = 'translateY(' + this.value + ')'
+        // $('#pos-left').css('margin-top',this.value) 
+        // $('#pos-right').css('margin-top',this.value) 
         $('#pos-bottom').css('margin-top',this.value) 
         $('#action-box').css('margin-top',this.value) 
     })
@@ -331,7 +334,7 @@ $(function() {
         $("#menu-box").show()
         $("#menu-mask").show()
         audioInit()
-        // screenLock()
+        screenLock()
     })
 });
 
