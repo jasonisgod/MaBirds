@@ -179,7 +179,7 @@ function showBgImg() {
     if (!isSkinRefreshNeed) {
         return
     }
-    $('body').css("background-image", "url(img/" + SKIN + "/bg.png)");
+    // $('body').css("background-image", "url(img/" + SKIN + "/bg.png)");
     $('#container').css("background-image", "url(img/" + SKIN + "/bg.png)");
     // $('body').css("background-repeat", "repeat");
 }
