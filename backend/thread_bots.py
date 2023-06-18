@@ -8,8 +8,6 @@ def _thread(game):
     while THREAD_BOTS:
         time.sleep(TIME_SLEEP)
         bots = game.get_bots()
-        if len(bots) == 4:
-            game.reset()
         if game.state == 'PLAY' and game.cnum in bots:
             game.do_bot(game.cnum)
         if game.state == 'ACTION':
