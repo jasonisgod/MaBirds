@@ -118,10 +118,11 @@ class Player:
 
 class Game:
     def __init__(self):
+        self.tokens = [None]*4
         self.reset()
-        self.bots = [1,2,3]
         
     def reset(self):
+        print('game.reset()')
         self.prs = [Player() for i in range(4)]
         self.pool = []
         self.bag = []
@@ -131,9 +132,8 @@ class Game:
         self.state = 'STOP'
         self.mask = True
 
-    def set_bots(self, bots):
-        print(f'set_bots() {bots}')
-        self.bots = [i for i in range(4) if str(i) in bots]
+    def get_bots(self):
+        return [i for i in [0,1,2,3] if self.tokens[i] is None]
 
     def set_mask(self, mask):
         self.mask = mask
@@ -227,7 +227,7 @@ class Game:
         }
     
     def do_action(self, num, atype, agroup):
-        print(f'do_action() {num} {atype} {agroup}')
+        # print(f'do_action() {num} {atype} {agroup}')
         pr = self.prs[num]
         pr.atype = atype
         pr.agroup = agroup
@@ -253,7 +253,7 @@ class Game:
         return True
     
     def _do_action_end(self, num, atype, agroup):
-        print(f'do_action_end() {num} {atype} {agroup}')
+        # print(f'do_action_end() {num} {atype} {agroup}')
         time.sleep(TIME_DELAY)
         # print(f'do_action_end() after delay')
         self.atype = None
@@ -297,7 +297,7 @@ class Game:
         return False
     
     def check_action(self):
-        print('check_action()')
+        # print('check_action()')
         nums = [(self.cnum + 1 + i) % 4 for i in range(3)]
         for atype in ['WOOO','GONG','PONG','SONG']:
             for num in nums:
@@ -314,7 +314,7 @@ class Game:
         return self.do_mooo((self.cnum + 1) % 4)
 
     def check_action_self(self):
-        print('check_action_self()')
+        # print('check_action_self()')
         for atype in ['WOOO','GONG']:
             pr = self.prs[self.cnum]
             groups = pr.action_self(atype, self.ctile)
@@ -325,7 +325,7 @@ class Game:
         return False
 
     def do_play(self, num, tile):
-        print(f'do_play() {num} {tile}')
+        # print(f'do_play() {num} {tile}')
         if self.state != 'PLAY' or num != self.cnum:
             return False
         pr = self.prs[self.cnum]
@@ -340,25 +340,25 @@ class Game:
         threading.Thread(target=self._do_play).start()
 
     def _do_play(self):
-        print(f'_do_play()')
+        # print(f'_do_play()')
         time.sleep(TIME_DELAY)
         # print(f'_do_play() after delay')
         nums = [(self.cnum + 1 + i) % 4 for i in range(3)]
         tmp = [self.prs[num].actions(self.ctile, self.num_diff(self.cnum, num)) for num in nums]
         tmp = [[len(x[key]) == 0 for key in x] for x in tmp]
         if all([all(x) for x in tmp]):
-            print('_do_play() nobody can action')
+            # print('_do_play() nobody can action')
             self.pool += [self.ctile]
             return self.do_mooo((self.cnum + 1) % 4)
         # print(f'_do_play() {tmp}')
         for pr in self.prs: 
             pr.atype, pr.agroup = None, None
         self.state = 'ACTION'
-        print('_do_play() somebody can action')
+        # print('_do_play() somebody can action')
         return True
 
     def do_mooo(self, num):
-        print(f'do_mooo() {num}')
+        # print(f'do_mooo() {num}')
         if len(self.bag) == 0:
             self.state = 'DRAW'
             return True
@@ -393,3 +393,21 @@ class Game:
             # return self.do_action(num, 'CANCEL', None)
         return False
 
+    def do_connect(self, token):
+        print(f'do_connect() {token}')
+        if self.state == 'STOP':
+            self.start()
+        for i in [0,2,1,3]:
+            if token == self.tokens[i]:
+                return i
+        for i in [0,2,1,3]:
+            if self.tokens[i] is None:
+                self.tokens[i] = token
+                return i
+        return -1
+
+    def do_disconnect(self, num):
+        print(f'do_disconnect() {num}')
+        self.tokens[num] = None
+        if len(self.get_bots()) == 4:
+            self.reset()

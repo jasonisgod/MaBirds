@@ -5,7 +5,7 @@ var SKIN = 4
 var isSkinRefreshNeed = true
 var audioEndTime = 0;
 var audio;
-
+const TOKEN_KEY = 'mabirds_token'
 var DATA = {}
 
 function colorFont(color, text) {
@@ -310,19 +310,44 @@ function audioInit() {
     playAudioName('START')
 }
 
+function getNewToken() {
+    return crypto.randomUUID()
+}
+
+function webSocketTest() {
+    console.log('webSocketTest')
+    const ws = new WebSocket(WS_URL)
+    ws.onopen = () => {
+        console.log('ws.onopen')
+        var token = localStorage.getItem(TOKEN_KEY) || getNewToken()
+        localStorage.setItem(TOKEN_KEY, token)
+        console.log('token', token)
+        var data = {'type':'connect', 'token': token}
+        ws.send(JSON.stringify(data))
+        console.log('ws.send', data)
+    }
+    ws.onmessage = (message) => {
+        console.log(`ws.onmessage`, message.data)
+        var data = JSON.parse(message.data)
+        NUM = data.num
+        console.log('server return num', NUM)
+    }
+}
+
 $(function() {
     console.log('ready')
     preloadImages()
     setPollTimer()
+    webSocketTest()
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
-    $("#select-trans").change(function() { 
-        // var transform = 'translateY(' + this.value + ')'
-        // $('#pos-left').css('margin-top',this.value) 
-        // $('#pos-right').css('margin-top',this.value) 
+    $("#select-trans").change(function() {
         $('#pos-bottom').css('margin-top',this.value) 
         $('#action-box').css('margin-top',this.value) 
+    })
+    $("#select-screen").change(function() {
+        onclickFullscreen()
     })
     $("#start-box").show()
     $("#main-box").hide()
@@ -331,8 +356,8 @@ $(function() {
     $("#start-btn").click(function() { 
         $("#start-box").hide()
         $("#main-box").show()
-        $("#menu-box").show()
-        $("#menu-mask").show()
+        $("#menu-box").hide()
+        $("#menu-mask").hide()
         audioInit()
         screenLock()
     })

@@ -1,1 +1,1 @@
-var VER_JS = 'v0.6'
+var VER_JS = 'v0.7'
