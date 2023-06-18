@@ -338,7 +338,6 @@ $(function() {
     console.log('ready')
     preloadImages()
     setPollTimer()
-    webSocketTest()
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
@@ -360,6 +359,7 @@ $(function() {
         $("#menu-mask").hide()
         audioInit()
         screenLock()
+        webSocketTest()
     })
 });
 
