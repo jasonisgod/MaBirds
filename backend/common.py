@@ -408,6 +408,7 @@ class Game:
 
     def do_disconnect(self, num):
         print(f'do_disconnect() {num}')
+        if num is None: return
         self.tokens[num] = None
         if len(self.get_bots()) == 4:
             self.reset()

@@ -1,6 +1,6 @@
 
-var POLL_TIME = 200
-var NUM = 0
+var POLL_TIME = 500
+var NUM = -1
 var SKIN = 4
 var isSkinRefreshNeed = true
 var audioEndTime = 0;
