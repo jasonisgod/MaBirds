@@ -1,10 +1,11 @@
-
+var DEBUG_LOG = false
 var POLL_TIME = 500
 var NUM = -1
 var SKIN = 4
 var isSkinRefreshNeed = true
 var audioEndTime = 0;
 var audio;
+
 const TOKEN_KEY = 'mabirds_token'
 var DATA = {}
 
@@ -250,6 +251,9 @@ function setPollTimer() {
 }
 
 function screenLock() {
+    if (navigator.userAgent.includes('iPhone')) {
+        return
+    }
     if (document.documentElement.requestFullscreen) {
         document.querySelector("#container").requestFullscreen()
     } else if (document.documentElement.webkitRequestFullScreen) {
@@ -310,40 +314,92 @@ function audioInit() {
     playAudioName('START')
 }
 
-function getNewToken() {
-    return crypto.randomUUID()
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+    .replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, 
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
 
-function webSocketTest() {
-    console.log('webSocketTest')
+function getNewToken() {
+    // return crypto.randomUUID()
+    return uuidv4()
+}
+
+function webSocketStart() {
+    console.log('webSocketStart')
+    debugLog('webSocketStart')
     const ws = new WebSocket(WS_URL)
     ws.onopen = () => {
         console.log('ws.onopen')
+        debugLog('ws.onopen')
         var token = localStorage.getItem(TOKEN_KEY) || getNewToken()
+        debugLog('after localStorage.getItem')
         localStorage.setItem(TOKEN_KEY, token)
         console.log('token', token)
         var data = {'type':'connect', 'token': token}
+        debugLog('before ws.send')
         ws.send(JSON.stringify(data))
         console.log('ws.send', data)
+        debugLog('after ws.send')
     }
     ws.onmessage = (message) => {
         console.log(`ws.onmessage`, message.data)
+        debugLog('ws.onmessage')
         var data = JSON.parse(message.data)
         NUM = data.num
         console.log('server return num', NUM)
+    }
+    ws.onclose = (e) => {
+        console.log(`ws.onclose`, e)
+        debugLog('ws.onclose')
+        setTimeout(function() {
+            webSocketStart()
+        }, 1000)
+    }
+    ws.onerror = (e) => {
+        console.log(`ws.onerror`, e)
+        debugLog('ws.onerror')
+        setTimeout(function() {
+            webSocketStart()
+        }, 1000)
+    }
+}
+
+function moveBottomBox(delta) {
+    $('#pos-bottom').css('margin-top', delta)
+    $('#action-box').css('margin-top', delta)
+}
+
+function userAgent() {
+    console.log(navigator.userAgent)
+    if (navigator.userAgent.includes('iPhone')) {
+        moveBottomBox('-10vh')
+        document.getElementById('select-trans').getElementsByTagName('option')[6].selected = 'selected'
+    }
+}
+
+function debugLog(e) {
+    if (DEBUG_LOG) {
+        document.getElementById('tag-box').innerText = e
     }
 }
 
 $(function() {
     console.log('ready')
-    preloadImages()
+    debugLog('ready 1')
+    showBgImg()
+    // preloadImages()
     setPollTimer()
+    userAgent()
+    debugLog('after userAgent 1')
     $("#select-skin").change(function() { SKIN = this.value; isSkinRefreshNeed = true })
     $("#select-seat").change(function() { NUM = this.value })
     $("#select-bots").change(function() { $.get(DOMAIN + "/api/bots/" + this.value ) })
     $("#select-trans").change(function() {
-        $('#pos-bottom').css('margin-top',this.value) 
-        $('#action-box').css('margin-top',this.value) 
+        moveBottomBox(this.value)
     })
     $("#select-screen").change(function() {
         onclickFullscreen()
@@ -353,13 +409,17 @@ $(function() {
     $("#menu-box").hide()
     $("#menu-mask").hide()
     $("#start-btn").click(function() { 
+        debugLog('after start btn clicked')
         $("#start-box").hide()
         $("#main-box").show()
         $("#menu-box").hide()
         $("#menu-mask").hide()
         audioInit()
+        debugLog('after audioInit')
         screenLock()
-        webSocketTest()
+        debugLog('after screenLock')
+        webSocketStart()
+        debugLog('after webSocketStart')
     })
 });
 

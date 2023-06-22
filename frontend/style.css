@@ -226,6 +226,7 @@ body {
     border: 0;
     border-radius: 1000px;
     cursor: pointer;
+    padding: 0;
 }
 
 .action:hover {
